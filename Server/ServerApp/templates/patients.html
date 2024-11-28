@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    My patients
+{% endblock %}
+
+{% block additionalLinks %}
+<link rel="stylesheet" href="{% static 'css/patients.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="patients-wrapper">
+    <table id="patients-table">
+        <tr id="table-column-name">
+            <th>Id</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Dashboard link</th>
+        </tr>
+        {% for patient in page_obj %}
+        <tr class="table-row">
+            <td>{{ patient.public_id }}</td>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.status }}</td>
+            <td>
+                <a class="dashboard-link" href="{% url 'dashboard' patient.public_id %}">
+                    <img src="{% static 'images/icons/redirect-light.svg' %}" alt="">
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"><</a>
+        {% else %}
+        <a href="" class="disable"><</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">></a>
+        {% else %}
+        <a href="" class="disable">></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

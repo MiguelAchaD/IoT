@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Your dashboard
+{% endblock %}
+
+{% block additionalLinks %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <div id="patient-info">
+        <p>Patient: {{patient.name}} Age: {{patient.age}}</p>
+    </div>
+    <div id="dashboard-content"></div>
+</div>
+{% endblock %}

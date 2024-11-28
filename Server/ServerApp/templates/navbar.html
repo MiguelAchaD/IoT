@@ -1,0 +1,19 @@
+{% load static %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+
+<nav>
+    <div id="wrapper">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/icons/home-light.svg' %}" alt="">
+        </a>
+        <a href="{% url 'patients' %}">
+            <img src="{% static 'images/icons/list-light.svg' %}" alt="">
+        </a>
+        <a href="{% url 'profile' %}">
+            <img src="{% static 'images/icons/profile-light.svg' %}" alt="">
+        </a>
+    </div>
+</nav>

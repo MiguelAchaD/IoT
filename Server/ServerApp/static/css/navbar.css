@@ -1,0 +1,27 @@
+nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#wrapper {
+    display: flex;
+    align-items: center;
+}
+
+#wrapper a {
+    display: flex;
+    align-items: center;
+    margin: 0 .5em;
+}
+
+#wrapper a img {
+    height: 2em;
+    border-bottom: 4px solid transparent;
+    transition: border-color var(--transition-time) var(--transition-type);
+}
+
+#wrapper a:hover img {
+    border-bottom: 4px solid var(--shadow-color-light);
+}
