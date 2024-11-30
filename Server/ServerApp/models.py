@@ -47,5 +47,6 @@ class Patient(models.Model):
     name = models.TextField()
     age = models.IntegerField()
     sex = models.TextField()
+    city = models.TextField()
     status = models.TextField()
     record_history = models.ForeignKey(to=History, on_delete=models.CASCADE, null=True, blank=True)

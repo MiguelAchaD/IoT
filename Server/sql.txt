@@ -33,10 +33,10 @@ INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(1, 1);
 INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(2, 2);
 
 --
-INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex) 
-VALUES("P-001", "Oier", 21, "INACTIVE", 1, "men");
-INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex) 
-VALUES("P-002", "Miguel", 21, "ACTIVE", 2, "men");
+INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex, city) 
+VALUES("P-001", "Oier", 21, "INACTIVE", 1, "men", "Bilbao");
+INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex, city) 
+VALUES("P-002", "Miguel", 21, "ACTIVE", 2, "men", "Bilbao");
 
 --
 INSERT INTO ServerApp_api(name, base_url, headers)
@@ -61,3 +61,4 @@ VALUES("6d0dc83492674279a88150501242111");
 --
 INSERT INTO ServerApp_apikeys(api_name, key_id)
 VALUES("Weather", 1);
+	

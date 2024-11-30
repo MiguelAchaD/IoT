@@ -8,7 +8,9 @@ def dashboard(request, id=None):
     history = patient.record_history
 
     weather_api_name = "Weather"
-    weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": "Madrid"})
+    weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": patient.city})
+
+    
 
     dashboards = []
 
