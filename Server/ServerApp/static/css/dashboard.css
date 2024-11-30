@@ -15,7 +15,7 @@
     text-align: center;
 }
 
-#patient-info p {
+#patient-info h2 {
     flex: 1;
 }
 
@@ -23,4 +23,16 @@
     flex: 1;
     width: 100%;
     background-color: var(--normal-color-light);
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+#dashboard-content.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty {
+    text-align: center;
 }

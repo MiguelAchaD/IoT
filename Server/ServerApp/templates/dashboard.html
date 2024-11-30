@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Your dashboard
+Your dashboard
 {% endblock %}
 
 {% block additionalLinks %}
@@ -12,8 +12,18 @@
 {% block content %}
 <div class="dashboard-wrapper">
     <div id="patient-info">
-        <p>Patient: {{patient.name}} Age: {{patient.age}}</p>
+        <h2>Patient: {{patient.name}}, Age: {{patient.age}}</h2>
     </div>
-    <div id="dashboard-content"></div>
+    <div id="dashboard-content" class="{% if not dashboards %}empty{% endif %}">
+        {% if dashboards %}
+            <!-- INSERT DASHBOARDSS -->
+        {% else %}
+        <div class="grid-item empty">
+            <h2>
+                Dashboard could not load
+            </h2>
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

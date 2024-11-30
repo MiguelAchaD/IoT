@@ -1,10 +1,19 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from ServerApp.models import Patient
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, Key
+import requests
 
 def dashboard(request, id=None):
     patient = Patient.objects.get(public_id=id)
-    return render(request, "dashboard.html", {"patient": patient})
+    history = patient.record_history
+
+    weather_api_name = "Weather"
+    weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": "Madrid"})
+
+    dashboards = []
+
+    return render(request, "dashboard.html", {"patient": patient, "dasboards": dashboards})
+
 
 def home(request):
     return render(request, "home.html", {})
@@ -12,13 +21,8 @@ def home(request):
 def profile(request):
     return render(request, "profile.html", {})
 
-from django.core.paginator import Paginator
-from django.shortcuts import render
-
 def patients(request):
     patients = Patient.objects.all()
-
-    print(patients)
 
     rows_per_page = 10
     paginator = Paginator(patients, rows_per_page)
@@ -31,3 +35,42 @@ def patients(request):
         'page_obj': page_obj,
         'empty_rows': range(empty_rows),
     })
+
+## EXTRA FUNCTIONS
+
+def key_call_api(api_name, endpoint_name, parameters=None):
+    try:
+        api_keys = ApiKeys.objects.get(api_name=api_name)
+        key = api_keys.get_random_key()
+    except ApiKeys.DoesNotExist:
+        key = None
+
+    if key:
+        parameters["<KEY>"] = key
+        weather_api_result = call_api(api_name, endpoint_name, parameters)
+        return weather_api_result
+    else:
+        return None
+
+def call_api(api_name, endpoint_name, parameters=None):
+    try:
+        api_object = Api.objects.get(name=api_name)
+        endpoint_object = Endpoint.objects.get(name=endpoint_name)
+    except:
+        return None
+    
+    call_url = str(api_object.base_url) + str(endpoint_object.url)
+    method = endpoint_object.method
+    
+    if (len(parameters.keys()) > 0):
+        call_url = format_url(call_url, parameters)
+
+    if (method == "GET"):
+        return requests.get(url=call_url, headers=api_object.headers)
+    elif (method == "POST"):
+        return requests.post(url=call_url)
+
+def format_url(call_url, parameters):
+    for parameter in parameters.keys():
+        call_url = call_url.replace(parameter, parameters.get(parameter))
+    return call_url

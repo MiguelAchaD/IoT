@@ -1,0 +1,63 @@
+--
+DELETE FROM ServerApp_record;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_record';
+DELETE FROM ServerApp_history;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_history';
+DELETE FROM ServerApp_history_records;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_history_records';
+DELETE FROM ServerApp_patient;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_patient';
+DELETE FROM ServerApp_api;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_api';
+DELETE FROM ServerApp_endpoint;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_endpoint';
+DELETE FROM ServerApp_api_endpoints;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_api_endpoints';
+DELETE FROM ServerApp_key;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_key';
+DELETE FROM ServerApp_apikeys;
+DELETE FROM sqlite_sequence WHERE name='ServerApp_apikeys';
+
+--
+INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, xyz_accelerometer, is_exposed_to_light) 
+VALUES("2024-11-29 11:21:00", 80, 24, "100;100;100", 1);
+INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, xyz_accelerometer, is_exposed_to_light) 
+VALUES("2024-11-29 11:22:00", 85, 25, "101;101;101", 0);
+
+--
+INSERT INTO ServerApp_history(day_of_record) VALUES("2024-11-29");
+INSERT INTO ServerApp_history(day_of_record) VALUES("2024-11-29");
+
+--
+INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(1, 1);
+INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(2, 2);
+
+--
+INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex) 
+VALUES("P-001", "Oier", 21, "INACTIVE", 1, "men");
+INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex) 
+VALUES("P-002", "Miguel", 21, "ACTIVE", 2, "men");
+
+--
+INSERT INTO ServerApp_api(name, base_url, headers)
+VALUES ("Weather", "https://api.weatherapi.com/", '{"Content-Type": "application/json", "Accept": "application/json"}');
+
+--
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("current", "GET", "v1/current.json?key=<KEY>&q=<CITY>&aqi=yes");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("forecast", "GET", "v1/forecast.json?key=<KEY>&q=<CITY>&days=5&aqi=yes&alerts=yes");
+
+--
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(1, 1);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(1, 2);
+
+--
+INSERT INTO ServerApp_key(key_value)
+VALUES("6d0dc83492674279a88150501242111");
+
+--
+INSERT INTO ServerApp_apikeys(api_name, key_id)
+VALUES("Weather", 1);
