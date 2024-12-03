@@ -31,10 +31,6 @@ form {
     height: 2em;
 }
 
-.buttons {
-    justify-content: space-between;
-}
-
 .access-button {
     text-decoration: none;
     display: inline-block;
@@ -49,6 +45,10 @@ form {
     cursor: pointer;
     transition: background-color 0.3s ease;
     user-select: none;
+}
+
+.access-button:visited {
+    color: inherit;
 }
 
 .access-button:hover {

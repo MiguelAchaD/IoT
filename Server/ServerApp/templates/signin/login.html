@@ -6,8 +6,9 @@ Login
 {% endblock %}
 
 {% block inputs %}
-    <div class="buttons">
-        <a type="submit" class="access-button primary">Log In</a>
-        <a href="{% url 'register' %}" class="access-button secondary">Register</a>
-    </div>
+    <button type="submit" class="access-button primary">Log In</button>
+    <p>
+        if you do not already have an account 
+        <a href="{% url 'register' %}">register here</a>
+    </p>
 {% endblock %}

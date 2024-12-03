@@ -13,7 +13,7 @@
         <form method="post">
             {% csrf_token %}
             <h2>Sign Up</h2>
-            <input type="email" class="input" name="mail" id="email" placeholder="Email">
+            <input type="email" class="input" name="email" id="email" placeholder="Email">
             <input type="password" class="input password" name="password" id="password" placeholder="Password">
             {% block inputs %}
             {% endblock %}
