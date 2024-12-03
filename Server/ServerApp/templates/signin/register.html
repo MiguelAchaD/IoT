@@ -1,0 +1,14 @@
+{% extends 'signin/baseSignin.html' %}
+{% load static %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block inputs %}
+    <input type="password" class="input password" name="password_validation" id="confirm-password" placeholder="Confirm Password">
+    <input type="text" class="input" name="username" id="username" placeholder="Username">
+    <div class="buttons">
+        <button type="submit" class="access-button primary">Register</button>
+    </div>
+{% endblock %}

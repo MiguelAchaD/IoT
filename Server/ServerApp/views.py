@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, Key
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, Key, User
 import requests
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login
 
+@login_required
 def dashboard(request, id=None):
     patient = Patient.objects.get(public_id=id)
     history = patient.record_history
@@ -23,9 +26,11 @@ def dashboard(request, id=None):
 def home(request):
     return render(request, "home.html", {})
 
+@login_required
 def profile(request):
     return render(request, "profile.html", {})
 
+@login_required
 def patients(request):
     patients = Patient.objects.all()
 
@@ -41,8 +46,49 @@ def patients(request):
         'empty_rows': range(empty_rows),
     })
 
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('profile')
+        else:
+            return render(request, 'signin/login.html', {'error': 'Invalid credentials'})
+    return render(request, 'signin/login.html')
+
+def register(request):
+    if request.method == 'POST':
+        continue_process = True
+        email = request.POST.get('mail')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_validation')
+
+        if password != password_confirm:
+            continue_process = False
+            error = 'Passwords do not match.'
+
+        if continue_process and User.objects.filter(username=username).exists():
+            continue_process = False
+            error = 'Username already exists.'
+
+        if continue_process and User.objects.filter(email=email).exists():
+            continue_process = False
+            error = 'Email is already registered.'
+
+        if continue_process:
+            User.objects.create_user(username=username, email=email, password=password)
+            return redirect('login')
+        else:
+            return render(request, 'signin/register.html', {'error': error})
+
+    return render(request, 'signin/register.html')
+
 ## EXTRA FUNCTIONS
 
+@login_required
 def key_call_api(api_name, endpoint_name, parameters=None):
     try:
         api_keys = ApiKeys.objects.get(api_name=api_name)
@@ -57,6 +103,7 @@ def key_call_api(api_name, endpoint_name, parameters=None):
     else:
         return None
 
+@login_required
 def call_api(api_name, endpoint_name, parameters=None):
     try:
         api_object = Api.objects.get(name=api_name)
@@ -75,6 +122,7 @@ def call_api(api_name, endpoint_name, parameters=None):
     elif (method == "POST"):
         return requests.post(url=call_url)
 
+@login_required
 def format_url(call_url, parameters):
     for parameter in parameters.keys():
         call_url = call_url.replace(parameter, parameters.get(parameter))

@@ -1,5 +1,6 @@
 from django.db import models
 import random
+from django.contrib.auth.models import User
 
 class Endpoint(models.Model):
     id = models.AutoField(primary_key=True)

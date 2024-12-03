@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from ServerApp.views import dashboard, home, profile, patients
+from ServerApp.views import dashboard, home, profile, patients, login, register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +24,7 @@ urlpatterns = [
     path('dashboard/<str:id>', dashboard, name="dashboard"),
     path('profile/', profile, name="profile"),
     path('patients/', patients, name="patients"),
+    path('login/', login, name="login"),
+    path('register/', register, name="register"),
     path('', home, name="home")
 ]

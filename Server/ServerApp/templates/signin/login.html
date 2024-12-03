@@ -1,0 +1,13 @@
+{% extends 'signin/baseSignin.html' %}
+{% load static %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block inputs %}
+    <div class="buttons">
+        <a type="submit" class="access-button primary">Log In</a>
+        <a href="{% url 'register' %}" class="access-button secondary">Register</a>
+    </div>
+{% endblock %}
