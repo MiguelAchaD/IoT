@@ -15,6 +15,9 @@ Your dashboard
 <div class="dashboard-wrapper">
     <div id="patient-info">
         <h2>Patient: {{patient.name}}, Age: {{patient.age}}</h2>
+        <a href="./{{patient.public_id}}">
+            <img id="reload" src="{% static 'images/icons/update.svg' %}" alt="">
+        </a>
     </div>
     <div id="dashboard-content" class="{% if not dashboards %}empty{% endif %}">
         {% if dashboards %}

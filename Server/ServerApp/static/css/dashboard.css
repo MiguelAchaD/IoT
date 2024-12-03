@@ -17,8 +17,14 @@
 }
 
 #patient-info h2 {
-    flex: 1;
     text-align: center;
+    margin-right: 1em;
+}
+
+#patient-info a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #dashboard-content {
@@ -77,4 +83,8 @@
 
 .empty {
     text-align: center;
+}
+
+#reload {
+    width: 1em;
 }
