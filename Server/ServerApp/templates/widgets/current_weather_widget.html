@@ -1,0 +1,23 @@
+{% load static %}
+
+<div class="grid-item">
+    <div class="top">
+        <h2>{{data.location.name}}, {{data.location.region}}, {{data.location.country}}</h2>
+        <h3>updated: {{data.current.last_updated}}</h3>
+        <h3>Day forecast</h3>
+    </div>
+    <div class="middle-current">
+        <div id="condition">
+            <img src="{{data.current.condition.icon}}" alt="{{data.current.condition.text}}">
+            <div id="temperature">{{data.current.temp_c}} Cº</div>
+        </div>
+        <div id="wind">
+            <img src="{% static 'images/icons/wind.png' %}" alt="wind">
+            <div id="wind_direction">{{data.current.wind_dir}}</div>
+            <div id="wind_velocity">{{data.current.wind_kph}} km/h</div>
+        </div>
+    </div>
+    <div class="bottom">
+        
+    </div>
+</div>

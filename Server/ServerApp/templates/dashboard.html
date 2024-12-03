@@ -7,6 +7,8 @@ Your dashboard
 
 {% block additionalLinks %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/widgets/current_weather_widget.css' %}">
+<link rel="stylesheet" href="{% static 'css/widgets/forecast_weather_widget.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -17,12 +19,23 @@ Your dashboard
     <div id="dashboard-content" class="{% if not dashboards %}empty{% endif %}">
         {% if dashboards %}
             <!-- INSERT DASHBOARDSS -->
+            {% for dashboard in dashboards %}
+                {% if dashboard.type == "weather_current" %}
+                    {% include "widgets/current_weather_widget.html" with data=dashboard.data %}
+                {% elif dashboard.type == "weather_forecast" %}
+                    {% include "widgets/forecast_weather_widget.html" with data=dashboard.data %}
+                {% else %}
+                <div class="grid-item">
+                    
+                </div>
+                {% endif %}
+            {% endfor %}
         {% else %}
-        <div class="grid-item empty">
-            <h2>
-                Dashboard could not load
-            </h2>
-        </div>
+            <div class="grid-item empty">
+                <h2>
+                    Dashboard could not load
+                </h2>
+            </div>
         {% endif %}
     </div>
 </div>

@@ -1,0 +1,19 @@
+.middle-forecast {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.middle-forecast * {
+    text-align: center;
+}
+
+#forecast-table {
+    border-spacing: 1em;
+}
+
+.forecast td {
+    vertical-align: top;
+}

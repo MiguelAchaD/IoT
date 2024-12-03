@@ -9,12 +9,15 @@ def dashboard(request, id=None):
 
     weather_api_name = "Weather"
     weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": patient.city})
+    weather_forecast_response = key_call_api(weather_api_name, "forecast", {"<CITY>": patient.city})
+    weather_forecast_response['forecast'] = weather_forecast_response['forecast']['forecastday'][:5]
 
-    
+    dashboards = [
+        {"type": "weather_current", "data": weather_current_response},
+        {"type": "weather_forecast", "data": weather_forecast_response},
+    ]
 
-    dashboards = []
-
-    return render(request, "dashboard.html", {"patient": patient, "dasboards": dashboards})
+    return render(request, "dashboard.html", {"patient": patient, "dashboards": dashboards})
 
 
 def home(request):
@@ -68,7 +71,7 @@ def call_api(api_name, endpoint_name, parameters=None):
         call_url = format_url(call_url, parameters)
 
     if (method == "GET"):
-        return requests.get(url=call_url, headers=api_object.headers)
+        return requests.get(url=call_url, headers=api_object.headers).json()
     elif (method == "POST"):
         return requests.post(url=call_url)
 
