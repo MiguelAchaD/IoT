@@ -30,9 +30,55 @@ def dashboard(request, id=None):
 def home(request):
     return render(request, "home.html", {})
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+
+from django.contrib.auth import update_session_auth_hash
+
 @login_required
 def profile(request):
-    return render(request, "profile.html", {})
+    user = request.user
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        old_password = request.POST.get('old-password')
+        new_password = request.POST.get('password')
+        new_password_validation = request.POST.get('password-validation')
+
+        if username and username != user.username:
+            if CustomUser.objects.filter(username=username).exclude(id=user.id).exists():
+                return render(request, "profile.html", {"user": user, "error": "The username is already in use"})
+        
+        if email and email != user.email:
+            if CustomUser.objects.filter(email=email).exclude(id=user.id).exists():
+                return render(request, "profile.html", {"user": user, "error": "The email is already in use"})
+
+        if new_password or new_password_validation:
+            if not old_password:
+                return render(request, "profile.html", {"user": user, "error": "Insert the old password to validate your identity"})
+            
+            if not user.check_password(old_password):
+                return render(request, "profile.html", {"user": user, "error": "Wrong old password"})
+
+            if new_password != new_password_validation:
+                return render(request, "profile.html", {"user": user, "error": "The passwords don't coincide"})
+
+            if new_password == old_password:
+                return render(request, "profile.html", {"user": user, "error": "The passwords are the same"})
+
+            user.set_password(new_password)
+            update_session_auth_hash(request, user)
+
+        user.username = username or user.username
+        user.email = email or user.email
+        user.save()
+
+        messages.success(request, "Perfil actualizado correctamente.")
+        return render(request, "profile.html", {"user": user})
+
+    return render(request, "profile.html", {"user": user})
+
+
 
 @login_required
 def patients(request):

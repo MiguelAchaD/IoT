@@ -33,6 +33,7 @@ form {
 
 .access-button {
     text-decoration: none;
+    color: black;
     display: inline-block;
     padding: 1em 2em;
     background-color: var(--normal-color-light);
