@@ -69,3 +69,69 @@
 .dashboard-link img {
     height: 1.5em;
 }
+
+#add-patient {
+    background-color: var(--secondary-color-light);
+    position: absolute;
+    padding: 3em;
+    height: 50vh;
+    width: 25vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 2em;
+    border: black 1px solid;
+}
+
+.add-patient label, input {
+    width: 100%;
+}
+
+.access-button {
+    text-decoration: none;
+    color: black;
+    display: inline-block;
+    padding: 1em 1em;
+    margin: 0 1em;
+    background-color: var(--normal-color-light);
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+
+.access-button:visited {
+    color: inherit;
+}
+
+.access-button:hover {
+    background-color: var(--shadow-color-light);
+}
+
+.cancel {
+    background-color: var(--cancel-color-light);
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 1em;
+}
+
+#add-patient-button {
+    padding: .5em .5em;
+    margin-top: .5em;
+}
+
+.hidden {
+    visibility: hidden;
+}
