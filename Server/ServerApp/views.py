@@ -4,6 +4,8 @@ from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser
 import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
+from .models import Reunion
+from .forms import ReunionForm
 
 @login_required
 def dashboard(request, id=None):
@@ -170,3 +172,17 @@ def format_url(call_url, parameters):
     for parameter in parameters.keys():
         call_url = call_url.replace(parameter, parameters.get(parameter))
     return call_url
+
+def lista_reuniones(request):
+    reuniones = Reunion.objects.all()
+    return render(request, 'lista_reuniones.html', {'reuniones': reuniones})
+
+def nueva_reunion(request):
+    if request.method == 'POST':
+        form = ReunionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_reuniones')
+    else:
+        form = ReunionForm()
+    return render(request, 'nueva_reunion.html', {'form': form})
