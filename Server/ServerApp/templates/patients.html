@@ -18,6 +18,7 @@
             <th>Name</th>
             <th>Status</th>
             <th>Dashboard</th>
+            <th>Calendar</th>
         </tr>
         {% for patient in page_obj %}
         <tr class="table-row">
@@ -26,6 +27,11 @@
             <td>{{ patient.status }}</td>
             <td>
                 <a class="dashboard-link" href="{% url 'dashboard' patient.public_id %}">
+                    <img src="{% static 'images/icons/redirect-light.svg' %}" alt="">
+                </a>
+            </td>
+            <td>
+                <a class="calendar-link" href="{% url 'calendar' %}">
                     <img src="{% static 'images/icons/redirect-light.svg' %}" alt="">
                 </a>
             </td>

@@ -23,7 +23,7 @@
 }
 
 #table-column-name th {
-    width: 25%;
+    width: 20%;
 }
 
 .table-row {
@@ -67,6 +67,16 @@
 }
 
 .dashboard-link img {
+    height: 1.5em;
+}
+
+.calendar-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-link img {
     height: 1.5em;
 }
 
