@@ -7,6 +7,7 @@
 
 {% block additionalLinks %}
 <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+<script src="{% static 'js/patients.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -31,6 +32,7 @@
         </tr>
         {% endfor %}
     </table>
+    <button id="add-patient-button" class="access-button">+ add patient</button>
     <div class="pagination">
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}"><</a>
@@ -47,4 +49,21 @@
         {% endif %}
     </div>
 </div>
+<form id="add-patient" class="hidden">
+    <h2>New Patient</h2>
+    <label for="public_id">Internal ID</label>
+    <input type="text" name="public_id">
+    <label for="name">Patient name</label>
+    <input type="text" name="name">
+    <label for="sex">Sex</label>
+    <input type="text" name="sex">
+    <label for="age">Age</label>
+    <input type="text" name="age">
+    <label for="city">City</label>
+    <input type="text" name="city">
+    <div class="buttons">
+        <button type="submit" class="access-button">Add patient</button>
+        <button id="cancel-patient" class="access-button cancel">Cancel</button>
+    </div>
+</form>
 {% endblock %}
