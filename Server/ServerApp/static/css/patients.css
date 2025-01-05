@@ -11,23 +11,29 @@
     background-color: var(--table-color-light);
 }
 
-#patients-table, th, td{
-    border: black 1px solid;
+td {
+    height: 100%;
+    margin: .5em 0;
+}
+
+.action-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#patients-table, th, td {
     border-collapse: collapse;
     text-align: center;
 }
 
 #table-column-name {
-    height: 1.5em;
     background-color: var(--secondary-color-light);
 }
 
 #table-column-name th {
     width: 20%;
-}
-
-.table-row {
-    height: 2em;
 }
 
 .pagination {
@@ -60,24 +66,18 @@
     background-color: var();
 }
 
-.dashboard-link {
+.action-link {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: none;
+    height: 100%;
+    cursor: default;
 }
 
-.dashboard-link img {
-    height: 1.5em;
-}
-
-.calendar-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.calendar-link img {
-    height: 1.5em;
+.action-link img {
+    max-width: 30%;
+    cursor: pointer;
 }
 
 #add-patient {

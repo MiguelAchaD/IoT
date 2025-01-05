@@ -98,6 +98,32 @@ def patients(request):
         'empty_rows': range(empty_rows),
     })
 
+@login_required
+def addPatient(request, public_id, name, age, sex, city):
+    patient, created = Patient.objects.get_or_create(
+        public_id=public_id,
+        defaults={
+            'name': name,
+            'age': age,
+            'sex': sex,
+            'city': city,
+            'status': 'INACTIVE',   
+        }
+    )
+
+    request.user.patients.add(patient)
+
+    return redirect("patients")
+
+@login_required
+def editPatient(request, old_public_id, public_id, name, age, sex, city):
+    return redirect("patients")
+
+@login_required
+def deletePatient(request, public_id):
+    Patient.objects.filter(public_id=public_id).delete()
+    return redirect("patients")
+
 def login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
