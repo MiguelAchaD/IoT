@@ -42,6 +42,15 @@ class History(models.Model):
     day_of_record = models.DateField()
     records = models.ManyToManyField(to=Record)
 
+class Reunion(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    date = models.DateTimeField()
+    url = models.URLField(max_length=500, blank=True)
+
+    def str(self):
+        return self.title
+
 class Patient(models.Model):
     id = models.AutoField(primary_key=True)
     public_id = models.TextField()
@@ -51,6 +60,7 @@ class Patient(models.Model):
     city = models.TextField()
     status = models.TextField()
     record_history = models.ForeignKey(to=History, on_delete=models.CASCADE, null=True, blank=True)
+    reunions = models.ManyToManyField(to=Reunion)
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
@@ -82,12 +92,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
-class Reunion(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    date = models.DateTimeField()
-    url = models.URLField(max_length=500, blank=True)
-
-    def str(self):
-        return self.title

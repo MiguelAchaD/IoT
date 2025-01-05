@@ -1,11 +1,12 @@
+import requests
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser
-import requests
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
-from .models import Reunion
 from .forms import ReunionForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 
 @login_required
 def dashboard(request, id=None):
@@ -32,10 +33,6 @@ def dashboard(request, id=None):
 def home(request):
     return render(request, "home.html", {})
 
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-
-from django.contrib.auth import update_session_auth_hash
 
 @login_required
 def profile(request):
@@ -158,7 +155,26 @@ def register(request):
         else:
             return render(request, 'signin/register.html', {'error': error})
 
-    return render(request, 'signin/register.html')
+@login_required
+def calendar(request, public_id):
+    try:
+        patient = Patient.objects.get(public_id=public_id)
+        reunions = patient.reunions.all()
+        return render(request, 'calendar.html', {'reunions': reunions})
+    except Patient.DoesNotExist:
+        return render(request, 'calendar.html', {'error': 'Patient not found'})
+
+
+@login_required
+def nueva_reunion(request):
+    if request.method == 'POST':
+        form = ReunionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('calendar')
+    else:
+        form = ReunionForm()
+    return render(request, 'nueva_reunion.html', {'form': form})
 
 ## EXTRA FUNCTIONS
 
@@ -198,17 +214,3 @@ def format_url(call_url, parameters):
     for parameter in parameters.keys():
         call_url = call_url.replace(parameter, parameters.get(parameter))
     return call_url
-
-def calendar(request):
-    reunions = Reunion.objects.all()
-    return render(request, 'calendar.html', {'reunions': reunions})
-
-def nueva_reunion(request):
-    if request.method == 'POST':
-        form = ReunionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('calendar')
-    else:
-        form = ReunionForm()
-    return render(request, 'nueva_reunion.html', {'form': form})

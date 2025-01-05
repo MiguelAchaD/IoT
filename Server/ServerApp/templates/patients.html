@@ -28,7 +28,7 @@
                 <a class="action-link" href="{% url 'dashboard' patient.public_id %}">
                     <img src="{% static 'images/icons/redirect-light.svg' %}" alt="dashboard" title="dashboard">
                 </a>
-                <a class="action-link" href="{% url 'calendar' %}">
+                <a class="action-link" href="{% url 'calendar' patient.public_id %}">
                     <img src="{% static 'images/icons/calendar-light.svg' %}" alt="calendar">
                 </a>
                 <a class="action-link" href="#">

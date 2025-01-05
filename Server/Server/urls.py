@@ -30,5 +30,5 @@ urlpatterns = [
     path('login/', login, name="login"),
     path('register/', register, name="register"),
     path('', home, name="home"),
-    path('calendar/', calendar, name='calendar')
+    path('calendar/<str:public_id>', calendar, name='calendar')
 ]
