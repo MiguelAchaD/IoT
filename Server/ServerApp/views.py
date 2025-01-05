@@ -77,8 +77,6 @@ def profile(request):
 
     return render(request, "profile.html", {"user": user})
 
-
-
 @login_required
 def patients(request):
     patients = request.user.patients.all()

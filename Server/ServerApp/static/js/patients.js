@@ -1,32 +1,61 @@
-function reversePatientFormVisibility(patientForm, patientFormTrigger) {
-    let patientAttributes = patientForm.getAttribute("class").toString()
-    if (patientAttributes.includes("hidden")) {
-        patientForm.classList.remove("hidden")
-        patientFormTrigger.setAttribute("style", "disabled")
-        const patientFormCancel = document.getElementById("cancel-patient")
-        
-        patientFormCancel.addEventListener("click", (form_event) => {
-            reversePatientFormVisibility(patientForm, patientFormTrigger)
-        })
-    } else {
-        patientForm.setAttribute("class", "hidden")
-        patientFormTrigger.removeAttribute("disabled")
+document.addEventListener("DOMContentLoaded", () => {
+    const addPatientForm = document.getElementById("add-patient");
+    const editPatientForm = document.getElementById("edit-patient");
+    const addPatientTrigger = document.getElementById("add-patient-button");
+    const editPatientTriggers = Array.from(document.getElementsByClassName("edit-patient-button"));
+    const cancelButtons = document.querySelectorAll("button.cancel");
+
+    function toggleFormVisibility(form, trigger) {
+        if (form.classList.contains("hidden")) {
+            form.classList.remove("hidden");
+            if (trigger) trigger.disabled = true;
+        } else {
+            form.classList.add("hidden");
+            if (trigger) trigger.disabled = false;
+            resetForm(form);
+        }
     }
-}
 
-addEventListener("DOMContentLoaded", (event) => {
-    const patientForm = document.getElementById("add-patient")
-    const patientFormTrigger = document.getElementById("add-patient-button")
+    function resetForm(form) {
+        const inputs = form.querySelectorAll("input");
+        inputs.forEach(input => input.value = "");
+        const links = form.querySelectorAll("a");
+        links.forEach(link => link.setAttribute("href", "#"));
+    }
 
-    patientFormTrigger.addEventListener("click", (form_event) => {
-        reversePatientFormVisibility(patientForm, patientFormTrigger)
-    })
+    addPatientTrigger.addEventListener("click", () => {
+        toggleFormVisibility(addPatientForm, addPatientTrigger);
+    });
 
-    const addPatientLink = document.getElementById("add-patient-link");
+    editPatientTriggers.forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            console.log("Edit button clicked for:", button.dataset.patientId);
+
+            const patientId = button.dataset.patientId;
+            document.getElementById("public_id").value = patientId;
+
+            toggleFormVisibility(editPatientForm, null);
+        });
+    });
+
+    cancelButtons.forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            const form = button.closest("form");
+            if (form.id === "add-patient") {
+                toggleFormVisibility(addPatientForm, addPatientTrigger);
+            } else if (form.id === "edit-patient") {
+                toggleFormVisibility(editPatientForm, null);
+            }
+        });
+    });
+
     const addFormInputs = document.querySelectorAll("#add-patient input");
+    const addPatientLink = document.getElementById("add-patient-link");
 
     addFormInputs.forEach(input => {
-        input.addEventListener("input", function () {
+        input.addEventListener("input", () => {
             const publicId = document.getElementById("public_id").value || '';
             const name = document.getElementById("name").value || '';
             const sex = document.getElementById("sex").value || '';
@@ -41,11 +70,11 @@ addEventListener("DOMContentLoaded", (event) => {
         });
     });
 
-    const editPatientLink = document.getElementById("edit-patient-link");
     const editFormInputs = document.querySelectorAll("#edit-patient input");
+    const editPatientLink = document.getElementById("edit-patient-link");
 
     editFormInputs.forEach(input => {
-        input.addEventListener("input", function () {
+        input.addEventListener("input", () => {
             const oldPublicId = document.getElementById("public_id").value || '';
             const publicId = document.getElementById("public_id").value || '';
             const name = document.getElementById("name").value || '';

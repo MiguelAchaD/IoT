@@ -21,6 +21,7 @@ from ServerApp.views import dashboard, home, profile, patients, login, register,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+    path('', home, name="home"),
     path('dashboard/<str:id>', dashboard, name="dashboard"),
     path('profile/', profile, name="profile"),
     path('patients/', patients, name="patients"),
@@ -29,6 +30,5 @@ urlpatterns = [
     path('delete-patient/<str:public_id>', deletePatient, name="deletePatient"),
     path('login/', login, name="login"),
     path('register/', register, name="register"),
-    path('', home, name="home"),
     path('calendar/<str:public_id>', calendar, name='calendar')
 ]

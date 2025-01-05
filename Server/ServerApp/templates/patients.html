@@ -31,10 +31,10 @@
                 <a class="action-link" href="{% url 'calendar' patient.public_id %}">
                     <img src="{% static 'images/icons/calendar-light.svg' %}" alt="calendar">
                 </a>
-                <a class="action-link" href="#">
+                <button class="action-link edit-patient-button">
                     <img src="{% static 'images/icons/edit-light.svg' %}" alt="edit"  title="edit">
-                </a>
-                <a class="action-link" href="#">
+                </button>
+                <a class="action-link" href="{% url 'deletePatient' patient.public_id %}">
                     <img src="{% static 'images/icons/delete-light.svg' %}" alt="delete"  title="delete">
                 </a>
             </td>

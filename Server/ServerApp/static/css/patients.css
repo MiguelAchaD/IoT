@@ -73,6 +73,7 @@ td {
     background: none;
     height: 100%;
     cursor: default;
+    border: none;
 }
 
 .action-link img {
@@ -80,7 +81,7 @@ td {
     cursor: pointer;
 }
 
-#add-patient {
+#add-patient, #edit-patient {
     background-color: var(--secondary-color-light);
     position: absolute;
     padding: 3em;
@@ -97,7 +98,7 @@ td {
     border: black 1px solid;
 }
 
-.add-patient label, input {
+.add-patient label, #edit-patient label, input {
     width: 100%;
 }
 
