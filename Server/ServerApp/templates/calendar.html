@@ -12,11 +12,11 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 events: [
-                    {% for reunion in reuniones %}
+                    {% for reunion in reunions %}
                     {
-                        title: "{{ reunion.titulo }}",
-                        start: "{{ reunion.fecha|date:'Y-m-dTH:i:s' }}",
-                        url: "{{ reunion.enlace }}"
+                        title: "{{ reunion.title }}",
+                        start: "{{ reunion.date|date:'Y-m-dTH:i:s' }}",
+                        url: "{{ reunion.url }}"
                     },
                     {% endfor %}
                 ]

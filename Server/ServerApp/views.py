@@ -173,16 +173,16 @@ def format_url(call_url, parameters):
         call_url = call_url.replace(parameter, parameters.get(parameter))
     return call_url
 
-def lista_reuniones(request):
-    reuniones = Reunion.objects.all()
-    return render(request, 'lista_reuniones.html', {'reuniones': reuniones})
+def calendar(request):
+    reunions = Reunion.objects.all()
+    return render(request, 'calendar.html', {'reunions': reunions})
 
 def nueva_reunion(request):
     if request.method == 'POST':
         form = ReunionForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lista_reuniones')
+            return redirect('calendar')
     else:
         form = ReunionForm()
     return render(request, 'nueva_reunion.html', {'form': form})

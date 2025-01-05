@@ -14,10 +14,10 @@ class Migration(migrations.Migration):
             name='Reunion',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('titulo', models.CharField(max_length=200)),
-                ('descripcion', models.TextField(blank=True)),
-                ('fecha', models.DateTimeField()),
-                ('enlace', models.URLField(blank=True, max_length=500)),
+                ('title', models.CharField(max_length=200)),
+                ('description', models.TextField(blank=True)),
+                ('date', models.DateTimeField()),
+                ('url', models.URLField(blank=True, max_length=500)),
             ],
         ),
     ]

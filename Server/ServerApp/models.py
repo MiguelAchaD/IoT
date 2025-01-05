@@ -84,10 +84,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
     
 class Reunion(models.Model):
-    titulo = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True)
-    fecha = models.DateTimeField()
-    enlace = models.URLField(max_length=500, blank=True)  # Enlace a Google Meet
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    date = models.DateTimeField()
+    url = models.URLField(max_length=500, blank=True)
 
     def str(self):
-        return self.titulo
+        return self.title

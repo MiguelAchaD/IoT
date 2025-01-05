@@ -6,14 +6,14 @@ def crear_evento_google_calendar(reunion):
     creds = Credentials.from_authorized_user_file('credentials.json')  # Ruta al archivo de credenciales
     service = build('calendar', 'v3', credentials=creds)
     evento = {
-        'summary': reunion.titulo,
-        'description': reunion.descripcion,
+        'summary': reunion.title,
+        'description': reunion.description,
         'start': {
-            'dateTime': reunion.fecha.isoformat(),
+            'dateTime': reunion.date.isoformat(),
             'timeZone': 'UTC',
         },
         'end': {
-            'dateTime': (reunion.fecha + timedelta(hours=1)).isoformat(),
+            'dateTime': (reunion.date + timedelta(hours=1)).isoformat(),
             'timeZone': 'UTC',
         },
         'conferenceData': {
@@ -26,5 +26,5 @@ def crear_evento_google_calendar(reunion):
         },
     }
     evento_creado = service.events().insert(calendarId='primary', body=evento, conferenceDataVersion=1).execute()
-    reunion.enlace = evento_creado['hangoutLink']
+    reunion.url = evento_creado['hangoutLink']
     reunion.save()
