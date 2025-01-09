@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block additionalLinks %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contact-section">
+    <h1>Contact Us</h1>
+    <p>We’re here to help. Whether you want to learn more about our IoT Care System or have specific questions, feel free to reach out. Our team is ready to assist you!</p>
+    
+    <div class="form-feedback">
+        {% if success %}
+            <p class="success">{{ success }}</p>
+        {% elif error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <form method="post" action="/contact/" class="contact-form">
+        {% csrf_token %}
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+        
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" placeholder="What is your message about?" required>
+        
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" placeholder="Write your message here" rows="6" required></textarea>
+        
+        <button type="submit" class="submit-button">Send Message</button>
+    </form>
+</div>
+{% endblock %}

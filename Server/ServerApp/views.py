@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from .forms import ReunionForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.core.mail import send_mail
 
 @login_required
 def dashboard(request, id=None):
@@ -216,3 +217,28 @@ def format_url(call_url, parameters):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        if not (name and email and subject and message):
+            return render(request, 'contact.html', {'error': 'All fields are required.'})
+
+        try:
+            send_mail(
+                f'Contact Form Submission: {subject}',
+                f'Message from {name} ({email}):\n\n{message}',
+                'your_email@example.com',
+                ['recipient_email@example.com'],
+                fail_silently=False,
+            )
+            messages.success(request, 'Your message has been sent successfully. Thank you!')
+            return redirect('home')
+        except Exception as e:
+            return render(request, 'contact.html', {'error': f'Failed to send your message. Error: {e}'})
+    else:
+        return render(request, 'contact.html')
