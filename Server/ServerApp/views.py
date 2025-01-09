@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout
 from .forms import ReunionForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
@@ -212,3 +212,7 @@ def format_url(call_url, parameters):
     for parameter in parameters.keys():
         call_url = call_url.replace(parameter, parameters.get(parameter))
     return call_url
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')

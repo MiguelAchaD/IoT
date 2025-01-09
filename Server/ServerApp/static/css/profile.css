@@ -14,9 +14,11 @@ main {
     background-color: var(--secondary-color-light);
     border-radius: 30px;
     padding: 3em;
-    height: 70%;
+    height: auto;
+    min-height: 70%;
     width: 40%;
 }
+
 
 form {
     width: 100%;
@@ -61,7 +63,8 @@ form {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    width: 40%;
+    margin-top: 5em;
+    width: 70%;
 }
 
 .input {
@@ -107,4 +110,8 @@ form {
     color: red;
     font-size: 0.9em;
     margin-top: 1em;
+}
+
+.access-button.signout {
+    margin-top: 2em;
 }

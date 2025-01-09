@@ -48,7 +48,7 @@
                 <button type="submit" class="access-button">Save changes</button>
                 <a href="./" class="access-button cancel">Cancel</a>
             </div>
-            <a href="./signout" class="access-button signout">Sign out</a>
+            <a href="{% url 'logout' %}" class="access-button signout">Sign out</a>
         </form>
         {% if error %}
             <p class="error-message">{{ error }}</p>
