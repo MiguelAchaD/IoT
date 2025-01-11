@@ -164,26 +164,40 @@ def calendar(request, public_id):
     try:
         patient = Patient.objects.get(public_id=public_id)
         reunions = patient.reunions.all()
+
+        request.session['patient_public_id'] = public_id
+
         return render(request, 'calendar.html', {'reunions': reunions})
     except Patient.DoesNotExist:
         return render(request, 'calendar.html', {'error': 'Patient not found'})
+
 
 @login_required
 def add_reunion(request, title, start, end, description, url):
     if request.method == 'POST':
         try:
-            print(f"{title}, {start}, {end}, {description}, {url}")
+            public_id = request.session.get('patient_public_id')
+            if not public_id:
+                return JsonResponse({'status': 'error', 'message': 'No patient selected'}, status=400)
+
+            patient = Patient.objects.get(public_id=public_id)
+
             reunion, created = Reunion.objects.get_or_create(
                 title=title,
                 description=description,
                 url=url,
                 start=start,
-                end=end
+                end=end,
             )
-            return JsonResponse({'status': 'success'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
 
+            patient.reunions.add(reunion)
+
+            return JsonResponse({'status': 'success', 'created': created})
+        except Patient.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Patient not found'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 @login_required
 def update_reunion(request, reunion_id):

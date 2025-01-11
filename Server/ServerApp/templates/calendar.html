@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% csrf_token %}
 
 {% block title %}
-    My patients
+My patients
 {% endblock %}
 
 {% block additionalLinks %}
@@ -50,88 +51,119 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, 10) === 'csrftoken=') {
+                        cookieValue = decodeURIComponent(cookie.substring(10));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         var calendarEl = document.getElementById('calendar');
         var selectedDayEl = null;
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            reunions: [
+            events: [
                 {% for reunion in reunions %}
                 {
                     title: "{{ reunion.title }}",
-                    start: "{{ reunion.date|date:'Y-m-dTH:i:s' }}",
-                    end: "{{ reunion.end_date|date:'Y-m-dTH:i:s' }}",
+                    start: "{{ reunion.start|date:'Y-m-d\TH:i:s' }}",
+                    end: "{{ reunion.end|date:'Y-m-d\TH:i:s' }}",
+                    description: "{{ reunion.description }}",
                     url: "{{ reunion.url }}"
                 },
                 {% endfor %}
             ],
-            dateClick: function(info) {
-                if (selectedDayEl) {
-                    selectedDayEl.classList.remove('selected-day');
-                }
-                selectedDayEl = info.dayEl;
-                selectedDayEl.classList.add('selected-day');
-
-                var reunionModal = document.getElementById('reunionModal');
-                reunionModal.style.display = 'block';
-                document.getElementById('saveReunion').onclick = function() {
-                    var reunionTitle = document.getElementById('reunionTitle').value;
-                    var reunionStartTime = document.getElementById('reunionStartTime').value;
-                    var reunionEndTime = document.getElementById('reunionEndTime').value;
-                    if (reunionTitle && reunionStartTime && reunionEndTime) {
-                        var reunionStartDateTime = info.dateStr + 'T' + reunionStartTime;
-                        var reunionEndDateTime = info.dateStr + 'T' + reunionEndTime;
-
-                        var url = `/add-reunion/${encodeURIComponent(reunionTitle)};${encodeURIComponent(reunionStartDateTime)};${encodeURIComponent(reunionEndDateTime)}`;
-                        
-                        fetch(url, {
-                            method: 'POST',
-                        }).then(response => {
-                            if (response.ok) {
-                                calendar.addReunion({
-                                    title: reunionTitle,
-                                    start: reunionStartDateTime,
-                                    end: reunionEndDateTime
-                                });
-                                reunionModal.style.display = 'none';
-                            } else {
-                                console.error('Error al guardar el reuniono.');
-                            }
-                        }).catch(error => {
-                            console.error('Error de conexión:', error);
-                        });
-                    }
-                    
-                };
-            },
-            reunionClick: function(info) {
-                var editReunionModal = document.getElementById('editReunionModal');
-                document.getElementById('editReunionTitle').value = info.reunion.title;
-                document.getElementById('editReunionStartTime').value = info.reunion.start.toISOString().substring(11, 16);
-                document.getElementById('editReunionEndTime').value = info.reunion.end.toISOString().substring(11, 16);
-                editReunionModal.style.display = 'block';
-
-                document.getElementById('updateReunion').onclick = function() {
-                    var newTitle = document.getElementById('editReunionTitle').value;
-                    var newStartTime = document.getElementById('editReunionStartTime').value;
-                    var newEndTime = document.getElementById('editReunionEndTime').value;
-                    if (newTitle && newStartTime && newEndTime) {
-                        var newStartDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newStartTime;
-                        var newEndDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newEndTime;
-                        info.reunion.setProp('title', newTitle);
-                        info.reunion.setStart(newStartDateTime);
-                        info.reunion.setEnd(newEndDateTime);
-                        editReunionModal.style.display = 'none';
-                    }
-                };
-
-                document.getElementById('deleteReunion').onclick = function() {
-                    info.reunion.remove();
-                    editReunionModal.style.display = 'none';
-                };
+        dateClick: function (info) {
+            if (selectedDayEl) {
+                selectedDayEl.classList.remove('selected-day');
             }
+            selectedDayEl = info.dayEl;
+            selectedDayEl.classList.add('selected-day');
+
+            var reunionModal = document.getElementById('reunionModal');
+            reunionModal.style.display = 'block';
+            document.getElementById('saveReunion').onclick = function () {
+                var reunionTitle = document.getElementById('reunionTitle').value;
+                var reunionStartTime = document.getElementById('reunionStartTime').value;
+                var reunionEndTime = document.getElementById('reunionEndTime').value;
+                var reunionDesctiption = document.getElementById('reunionDescription').value;
+                var reunionUrl = document.getElementById('reunionUrl').value;
+                if (reunionTitle && reunionStartTime && reunionEndTime) {
+                    var reunionStartDateTime = info.dateStr + 'T' + reunionStartTime;
+                    var reunionEndDateTime = info.dateStr + 'T' + reunionEndTime;
+
+                    var url = `/add-reunion/${encodeURIComponent(reunionTitle)};${encodeURIComponent(reunionStartDateTime)};${encodeURIComponent(reunionEndDateTime)};${encodeURIComponent(reunionDesctiption)};${encodeURIComponent(reunionUrl)}`;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken()
+                        },
+                        body: JSON.stringify({
+                            title: reunionTitle,
+                            start: reunionStartDateTime,
+                            end: reunionEndDateTime,
+                            description: reunionDesctiption,
+                            url: reunionUrl
+                        })
+                    }).then(response => {
+                        if (response.ok) {
+                            calendar.addEvent({
+                                title: reunionTitle,
+                                start: reunionStartDateTime,
+                                end: reunionEndDateTime,
+                                description: reunionDesctiption,
+                                url: reunionUrl
+                            });
+                            reunionModal.style.display = 'none';
+                        } else {
+                            console.error('Error al guardar el evento.');
+                        }
+                    }).catch(error => {
+                        console.error('Error de conexión:', error);
+                    });
+                }
+
+            };
+        },
+        eventClick: function (info) {
+            var editReunionModal = document.getElementById('editReunionModal');
+            document.getElementById('editReunionTitle').value = info.reunion.title;
+            document.getElementById('editReunionStartTime').value = info.reunion.start.toISOString().substring(11, 16);
+            document.getElementById('editReunionEndTime').value = info.reunion.end.toISOString().substring(11, 16);
+            editReunionModal.style.display = 'block';
+
+            document.getElementById('updateReunion').onclick = function () {
+                var newTitle = document.getElementById('editReunionTitle').value;
+                var newStartTime = document.getElementById('editReunionStartTime').value;
+                var newEndTime = document.getElementById('editReunionEndTime').value;
+                if (newTitle && newStartTime && newEndTime) {
+                    var newStartDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newStartTime;
+                    var newEndDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newEndTime;
+                    info.reunion.setProp('title', newTitle);
+                    info.reunion.setStart(newStartDateTime);
+                    info.reunion.setEnd(newEndDateTime);
+                    editReunionModal.style.display = 'none';
+                }
+            };
+
+            document.getElementById('deleteReunion').onclick = function () {
+                info.reunion.remove();
+                editReunionModal.style.display = 'none';
+            };
+        }
         });
-        calendar.render();
+    calendar.render();
     });
 </script>
 {% endblock %}
