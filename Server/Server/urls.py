@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from ServerApp.views import dashboard, home, profile, patients, login, register, calendar, addPatient, editPatient, deletePatient, logout_view, contact_view, add_event
+from ServerApp.views import dashboard, home, profile, patients, login, register, calendar, addPatient, editPatient, deletePatient, logout_view, contact_view, add_reunion
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,9 +31,7 @@ urlpatterns = [
     path('login/', login, name="login"),
     path('register/', register, name="register"),
     path('calendar/<str:public_id>', calendar, name='calendar'),
+    path('add-reunion/<str:title>;<str:start>;<str:end>;<str:description>;<str:url>', add_reunion, name='add_reunion'),
     path('logout/', logout_view, name='logout'),
     path('contact/', contact_view, name='contact'),
     path('send-message/', contact_view, name='send_message'),
-    path('add-event/<str:public_id>;<str:title>;<str:start>;<str:end>', add_event, name='addEvent'),
-
-]

@@ -18,27 +18,35 @@
 {% block content %}
 <div id="calendar"></div>
 
-<!-- Modal for adding event -->
-<div id="eventModal" style="display:none;">
-    <label for="eventTitle">Event Title:</label>
-    <input type="text" id="eventTitle" name="eventTitle">
-    <label for="eventStartTime">Start Time:</label>
-    <input type="time" id="eventStartTime" name="eventStartTime">
-    <label for="eventEndTime">End Time:</label>
-    <input type="time" id="eventEndTime" name="eventEndTime">
-    <button id="saveEvent">Save Event</button>
+<!-- Modal for adding reunion -->
+<div id="reunionModal" style="display:none;">
+    <label for="reunionTitle">Reunion Title:</label>
+    <input type="text" id="reunionTitle" name="reunionTitle">
+    <label for="reunionStartTime">Start Time:</label>
+    <input type="time" id="reunionStartTime" name="reunionStartTime">
+    <label for="reunionEndTime">End Time:</label>
+    <input type="time" id="reunionEndTime" name="reunionEndTime">
+    <label for="reunionDescription">Description:</label>
+    <input type="text" id="reunionDescription" name="reunionDescription">
+    <label for="reunionUrl">Url (optinal):</label>
+    <input type="text" id="reunionUrl" name="reunionUrl">
+    <button id="saveReunion">Save Reunion</button>
 </div>
 
-<!-- Modal for editing event -->
-<div id="editEventModal" style="display:none;">
-    <label for="editEventTitle">Event Title:</label>
-    <input type="text" id="editEventTitle" name="editEventTitle">
-    <label for="editEventStartTime">Start Time:</label>
-    <input type="time" id="editEventStartTime" name="editEventStartTime">
-    <label for="editEventEndTime">End Time:</label>
-    <input type="time" id="editEventEndTime" name="editEventEndTime">
-    <button id="updateEvent">Update Event</button>
-    <button id="deleteEvent">Delete Event</button>
+<!-- Modal for editing reunion -->
+<div id="editReunionModal" style="display:none;">
+    <label for="editReunionTitle">Reunion Title:</label>
+    <input type="text" id="editReunionTitle" name="editReunionTitle">
+    <label for="editReunionStartTime">Start Time:</label>
+    <input type="time" id="editReunionStartTime" name="editReunionStartTime">
+    <label for="editReunionEndTime">End Time:</label>
+    <input type="time" id="editReunionEndTime" name="editReunionEndTime">
+    <label for="editReunionDescription">Description:</label>
+    <input type="text" id="editReunionDescription" name="editReunionDescription">
+    <label for="editReunionUrl">Url:</label>
+    <input type="text" id="editReunionUrl" name="editReunionUrl">
+    <button id="updateReunion">Update Reunion</button>
+    <button id="deleteReunion">Delete Reunion</button>
 </div>
 
 <script>
@@ -47,7 +55,7 @@
         var selectedDayEl = null;
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: [
+            reunions: [
                 {% for reunion in reunions %}
                 {
                     title: "{{ reunion.title }}",
@@ -64,32 +72,30 @@
                 selectedDayEl = info.dayEl;
                 selectedDayEl.classList.add('selected-day');
 
-                var eventModal = document.getElementById('eventModal');
-                eventModal.style.display = 'block';
-                document.getElementById('saveEvent').onclick = function() {
-                    var eventTitle = document.getElementById('eventTitle').value;
-                    var eventStartTime = document.getElementById('eventStartTime').value;
-                    var eventEndTime = document.getElementById('eventEndTime').value;
-                    if (eventTitle && eventStartTime && eventEndTime) {
-                        var eventStartDateTime = info.dateStr + 'T' + eventStartTime;
-                        var eventEndDateTime = info.dateStr + 'T' + eventEndTime;
+                var reunionModal = document.getElementById('reunionModal');
+                reunionModal.style.display = 'block';
+                document.getElementById('saveReunion').onclick = function() {
+                    var reunionTitle = document.getElementById('reunionTitle').value;
+                    var reunionStartTime = document.getElementById('reunionStartTime').value;
+                    var reunionEndTime = document.getElementById('reunionEndTime').value;
+                    if (reunionTitle && reunionStartTime && reunionEndTime) {
+                        var reunionStartDateTime = info.dateStr + 'T' + reunionStartTime;
+                        var reunionEndDateTime = info.dateStr + 'T' + reunionEndTime;
 
-                        // Construir la URL para la solicitud
-                        var url = `/add-event/${encodeURIComponent('public_id')};${encodeURIComponent(eventTitle)};${encodeURIComponent(eventStartDateTime)};${encodeURIComponent(eventEndDateTime)}`;
+                        var url = `/add-reunion/${encodeURIComponent(reunionTitle)};${encodeURIComponent(reunionStartDateTime)};${encodeURIComponent(reunionEndDateTime)}`;
                         
-                        // Hacer la solicitud al servidor
                         fetch(url, {
-                            method: 'GET', // Usa GET si la vista espera este método, o POST si cambias la lógica
+                            method: 'POST',
                         }).then(response => {
                             if (response.ok) {
-                                calendar.addEvent({
-                                    title: eventTitle,
-                                    start: eventStartDateTime,
-                                    end: eventEndDateTime
+                                calendar.addReunion({
+                                    title: reunionTitle,
+                                    start: reunionStartDateTime,
+                                    end: reunionEndDateTime
                                 });
-                                eventModal.style.display = 'none';
+                                reunionModal.style.display = 'none';
                             } else {
-                                console.error('Error al guardar el evento.');
+                                console.error('Error al guardar el reuniono.');
                             }
                         }).catch(error => {
                             console.error('Error de conexión:', error);
@@ -98,30 +104,30 @@
                     
                 };
             },
-            eventClick: function(info) {
-                var editEventModal = document.getElementById('editEventModal');
-                document.getElementById('editEventTitle').value = info.event.title;
-                document.getElementById('editEventStartTime').value = info.event.start.toISOString().substring(11, 16);
-                document.getElementById('editEventEndTime').value = info.event.end.toISOString().substring(11, 16);
-                editEventModal.style.display = 'block';
+            reunionClick: function(info) {
+                var editReunionModal = document.getElementById('editReunionModal');
+                document.getElementById('editReunionTitle').value = info.reunion.title;
+                document.getElementById('editReunionStartTime').value = info.reunion.start.toISOString().substring(11, 16);
+                document.getElementById('editReunionEndTime').value = info.reunion.end.toISOString().substring(11, 16);
+                editReunionModal.style.display = 'block';
 
-                document.getElementById('updateEvent').onclick = function() {
-                    var newTitle = document.getElementById('editEventTitle').value;
-                    var newStartTime = document.getElementById('editEventStartTime').value;
-                    var newEndTime = document.getElementById('editEventEndTime').value;
+                document.getElementById('updateReunion').onclick = function() {
+                    var newTitle = document.getElementById('editReunionTitle').value;
+                    var newStartTime = document.getElementById('editReunionStartTime').value;
+                    var newEndTime = document.getElementById('editReunionEndTime').value;
                     if (newTitle && newStartTime && newEndTime) {
-                        var newStartDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newStartTime;
-                        var newEndDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newEndTime;
-                        info.event.setProp('title', newTitle);
-                        info.event.setStart(newStartDateTime);
-                        info.event.setEnd(newEndDateTime);
-                        editEventModal.style.display = 'none';
+                        var newStartDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newStartTime;
+                        var newEndDateTime = info.reunion.start.toISOString().substring(0, 10) + 'T' + newEndTime;
+                        info.reunion.setProp('title', newTitle);
+                        info.reunion.setStart(newStartDateTime);
+                        info.reunion.setEnd(newEndDateTime);
+                        editReunionModal.style.display = 'none';
                     }
                 };
 
-                document.getElementById('deleteEvent').onclick = function() {
-                    info.event.remove();
-                    editEventModal.style.display = 'none';
+                document.getElementById('deleteReunion').onclick = function() {
+                    info.reunion.remove();
+                    editReunionModal.style.display = 'none';
                 };
             }
         });

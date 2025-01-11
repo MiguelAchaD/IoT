@@ -1,7 +1,7 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, Event
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, Reunion
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from .forms import ReunionForm
@@ -166,53 +166,41 @@ def calendar(request, public_id):
     except Patient.DoesNotExist:
         return render(request, 'calendar.html', {'error': 'Patient not found'})
 
+@login_required
+def add_reunion(request, title, start, end, description, url):
+    if request.method == 'POST':
+        try:
+            print(f"{title}, {start}, {end}, {description}, {url}")
+            reunion, created = Reunion.objects.get_or_create(
+                title=title,
+                description=description,
+                url=url,
+                start=start,
+                end=end
+            )
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
 
 @login_required
-def nueva_reunion(request):
-    if request.method == 'POST':
-        form = ReunionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('calendar')
-    else:
-        form = ReunionForm()
-    return render(request, 'nueva_reunion.html', {'form': form})
-
-def calendar_view(request):
-    events = Event.objects.all()
-    return render(request, 'calendar.html', {'events': events})
-
-@csrf_exempt
-def add_event(request, public_id, title, start, end):
-    try:
-        # Crear un evento basado en los parámetros recibidos
-        event, created = Event.objects.get_or_create(
-            title=title,
-            start=start,
-            end=end,
-            defaults={'created_by': request.user}  # Si necesitas un campo adicional
-        )
-        return JsonResponse({'status': 'success', 'id': event.id})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
-    
-
-@csrf_exempt
-def update_event(request, event_id):
+def update_reunion(request, reunion_id):
     if request.method == 'POST':
         data = json.loads(request.body)
-        event = get_object_or_404(Event, id=event_id)
-        event.title = data['title']
-        event.start = data['start']
-        event.end = data.get('end')
-        event.save()
+        reunion = get_object_or_404(Reunion, id=reunion_id)
+        reunion.title = data['title']
+        reunion.description = data['description']
+        reunion.url = data['url']
+        reunion.start = data['start']
+        reunion.end = data.get('end')
+        reunion.save()
         return JsonResponse({'status': 'success'})
 
-@csrf_exempt
-def delete_event(request, event_id):
+@login_required
+def delete_reunion(request, reunion_id):
     if request.method == 'POST':
-        event = get_object_or_404(Event, id=event_id)
-        event.delete()
+        reunion = get_object_or_404(Reunion, id=reunion_id)
+        reunion.delete()
         return JsonResponse({'status': 'success'})
 
 ## EXTRA FUNCTIONS

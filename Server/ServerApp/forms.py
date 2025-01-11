@@ -4,4 +4,4 @@ from .models import Reunion
 class ReunionForm(forms.ModelForm):
     class Meta:
         model = Reunion
-        fields = ['title', 'description', 'date', 'url']
+        fields = ['title', 'description', 'start', 'end', 'url']
