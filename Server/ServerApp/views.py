@@ -156,6 +156,8 @@ def register(request):
             return redirect('login')
         else:
             return render(request, 'signin/register.html', {'error': error})
+    else:
+        return render(request, 'signin/register.html')
 
 @login_required
 def calendar(request, public_id):

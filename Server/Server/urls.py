@@ -35,3 +35,4 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('contact/', contact_view, name='contact'),
     path('send-message/', contact_view, name='send_message'),
+]
