@@ -73,13 +73,29 @@
                     if (eventTitle && eventStartTime && eventEndTime) {
                         var eventStartDateTime = info.dateStr + 'T' + eventStartTime;
                         var eventEndDateTime = info.dateStr + 'T' + eventEndTime;
-                        calendar.addEvent({
-                            title: eventTitle,
-                            start: eventStartDateTime,
-                            end: eventEndDateTime
+
+                        // Construir la URL para la solicitud
+                        var url = `/add-event/${encodeURIComponent('public_id')};${encodeURIComponent(eventTitle)};${encodeURIComponent(eventStartDateTime)};${encodeURIComponent(eventEndDateTime)}`;
+                        
+                        // Hacer la solicitud al servidor
+                        fetch(url, {
+                            method: 'GET', // Usa GET si la vista espera este método, o POST si cambias la lógica
+                        }).then(response => {
+                            if (response.ok) {
+                                calendar.addEvent({
+                                    title: eventTitle,
+                                    start: eventStartDateTime,
+                                    end: eventEndDateTime
+                                });
+                                eventModal.style.display = 'none';
+                            } else {
+                                console.error('Error al guardar el evento.');
+                            }
+                        }).catch(error => {
+                            console.error('Error de conexión:', error);
                         });
-                        eventModal.style.display = 'none';
                     }
+                    
                 };
             },
             eventClick: function(info) {

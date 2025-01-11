@@ -183,15 +183,19 @@ def calendar_view(request):
     return render(request, 'calendar.html', {'events': events})
 
 @csrf_exempt
-def add_event(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        event = Event.objects.create(
-            title=data['title'],
-            start=data['start'],
-            end=data.get('end')
+def add_event(request, public_id, title, start, end):
+    try:
+        # Crear un evento basado en los parámetros recibidos
+        event, created = Event.objects.get_or_create(
+            title=title,
+            start=start,
+            end=end,
+            defaults={'created_by': request.user}  # Si necesitas un campo adicional
         )
-        return JsonResponse({'id': event.id})
+        return JsonResponse({'status': 'success', 'id': event.id})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+    
 
 @csrf_exempt
 def update_event(request, event_id):
