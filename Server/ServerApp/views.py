@@ -1,13 +1,16 @@
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, Event
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from .forms import ReunionForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.http import JsonResponse
 from django.core.mail import send_mail
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def dashboard(request, id=None):
@@ -174,6 +177,39 @@ def nueva_reunion(request):
     else:
         form = ReunionForm()
     return render(request, 'nueva_reunion.html', {'form': form})
+
+def calendar_view(request):
+    events = Event.objects.all()
+    return render(request, 'calendar.html', {'events': events})
+
+@csrf_exempt
+def add_event(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        event = Event.objects.create(
+            title=data['title'],
+            start=data['start'],
+            end=data.get('end')
+        )
+        return JsonResponse({'id': event.id})
+
+@csrf_exempt
+def update_event(request, event_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        event = get_object_or_404(Event, id=event_id)
+        event.title = data['title']
+        event.start = data['start']
+        event.end = data.get('end')
+        event.save()
+        return JsonResponse({'status': 'success'})
+
+@csrf_exempt
+def delete_event(request, event_id):
+    if request.method == 'POST':
+        event = get_object_or_404(Event, id=event_id)
+        event.delete()
+        return JsonResponse({'status': 'success'})
 
 ## EXTRA FUNCTIONS
 

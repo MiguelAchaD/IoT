@@ -8,13 +8,43 @@
 {% block additionalLinks %}
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<style>
+    .selected-day {
+        background-color: green !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div id="calendar"></div>
+
+<!-- Modal for adding event -->
+<div id="eventModal" style="display:none;">
+    <label for="eventTitle">Event Title:</label>
+    <input type="text" id="eventTitle" name="eventTitle">
+    <label for="eventStartTime">Start Time:</label>
+    <input type="time" id="eventStartTime" name="eventStartTime">
+    <label for="eventEndTime">End Time:</label>
+    <input type="time" id="eventEndTime" name="eventEndTime">
+    <button id="saveEvent">Save Event</button>
+</div>
+
+<!-- Modal for editing event -->
+<div id="editEventModal" style="display:none;">
+    <label for="editEventTitle">Event Title:</label>
+    <input type="text" id="editEventTitle" name="editEventTitle">
+    <label for="editEventStartTime">Start Time:</label>
+    <input type="time" id="editEventStartTime" name="editEventStartTime">
+    <label for="editEventEndTime">End Time:</label>
+    <input type="time" id="editEventEndTime" name="editEventEndTime">
+    <button id="updateEvent">Update Event</button>
+    <button id="deleteEvent">Delete Event</button>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
+        var selectedDayEl = null;
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: [
@@ -22,10 +52,62 @@
                 {
                     title: "{{ reunion.title }}",
                     start: "{{ reunion.date|date:'Y-m-dTH:i:s' }}",
+                    end: "{{ reunion.end_date|date:'Y-m-dTH:i:s' }}",
                     url: "{{ reunion.url }}"
                 },
                 {% endfor %}
-            ]
+            ],
+            dateClick: function(info) {
+                if (selectedDayEl) {
+                    selectedDayEl.classList.remove('selected-day');
+                }
+                selectedDayEl = info.dayEl;
+                selectedDayEl.classList.add('selected-day');
+
+                var eventModal = document.getElementById('eventModal');
+                eventModal.style.display = 'block';
+                document.getElementById('saveEvent').onclick = function() {
+                    var eventTitle = document.getElementById('eventTitle').value;
+                    var eventStartTime = document.getElementById('eventStartTime').value;
+                    var eventEndTime = document.getElementById('eventEndTime').value;
+                    if (eventTitle && eventStartTime && eventEndTime) {
+                        var eventStartDateTime = info.dateStr + 'T' + eventStartTime;
+                        var eventEndDateTime = info.dateStr + 'T' + eventEndTime;
+                        calendar.addEvent({
+                            title: eventTitle,
+                            start: eventStartDateTime,
+                            end: eventEndDateTime
+                        });
+                        eventModal.style.display = 'none';
+                    }
+                };
+            },
+            eventClick: function(info) {
+                var editEventModal = document.getElementById('editEventModal');
+                document.getElementById('editEventTitle').value = info.event.title;
+                document.getElementById('editEventStartTime').value = info.event.start.toISOString().substring(11, 16);
+                document.getElementById('editEventEndTime').value = info.event.end.toISOString().substring(11, 16);
+                editEventModal.style.display = 'block';
+
+                document.getElementById('updateEvent').onclick = function() {
+                    var newTitle = document.getElementById('editEventTitle').value;
+                    var newStartTime = document.getElementById('editEventStartTime').value;
+                    var newEndTime = document.getElementById('editEventEndTime').value;
+                    if (newTitle && newStartTime && newEndTime) {
+                        var newStartDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newStartTime;
+                        var newEndDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newEndTime;
+                        info.event.setProp('title', newTitle);
+                        info.event.setStart(newStartDateTime);
+                        info.event.setEnd(newEndDateTime);
+                        editEventModal.style.display = 'none';
+                    }
+                };
+
+                document.getElementById('deleteEvent').onclick = function() {
+                    info.event.remove();
+                    editEventModal.style.display = 'none';
+                };
+            }
         });
         calendar.render();
     });
