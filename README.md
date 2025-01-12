@@ -3,13 +3,12 @@
 Care4U Hub is an innovative IoT system designed to ensure the safety, well-being, and connection of elderly individuals living independently. With features such as fall detection, activity monitoring, and seamless communication, it allows families and caregivers to provide proactive and comprehensive care.
 
 ## Features
-- **Fall Detection**:  Instantly detects falls and sends alerts to caregivers and emergency services.
-- **Activity Monitoring**: Tracks daily routines and detects irregularities.
 - **Easy Communication**: Facilitates video calls to strengthen connection with loved ones.
 - **Safe Home Environment**: Monitors environmental factors like temperature and smoke levels.
 - **Interactive Dashboard**: Centralizes key system information with customizable widgets.
+- **Light exposure**: Monitors how much light the person is exposed to.
   
-## Tecnologías Utilizadas
+## Technologies Used
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Django (with FullCalendar integration)
 - **Programming Language**: Python
@@ -58,5 +57,5 @@ Follow these steps to install and run the project locally:
 ## Contribution
 Contributions are welcome. Please submit a pull request or create an issue to share your ideas or feedback.
 
-## Licencia
-[Licencia MIT](LICENSE)
+## License
+[License MIT](LICENSE)
