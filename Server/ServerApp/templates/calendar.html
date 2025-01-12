@@ -41,18 +41,19 @@ My patients
 <div id="centralModal">
     <div id="reunionModal" style="display:none;" class="modalTable">
         <label for="reunionTitle">Reunion Title:</label>
-        <input type="text" id="reunionTitle" name="reunionTitle">
-        <div>
-            <label for="reunionStartTime">Start Time:</label>
-            <input type="time" id="reunionStartTime" name="reunionStartTime">
-            <label for="reunionEndTime">End Time:</label>
-            <input type="time" id="reunionEndTime" name="reunionEndTime">
-        </div>
-        <label for="reunionDescription">Description:</label>
-        <input type="text" id="reunionDescription" name="reunionDescription">
-        <label for="reunionUrl">Url (optinal):</label>
-        <input type="text" id="reunionUrl" name="reunionUrl">
+    <input type="text" id="reunionTitle" name="reunionTitle">
+    <div>
+        <label for="reunionStartTime">Start Time:</label>
+        <input type="time" id="reunionStartTime" name="reunionStartTime">
+        <label for="reunionEndTime">End Time:</label>
+        <input type="time" id="reunionEndTime" name="reunionEndTime">
+    </div>
+    <label for="reunionDescription">Description:</label>
+    <input type="text" id="reunionDescription" name="reunionDescription">
+    <label for="reunionUrl">Url (optional):</label>
+    <input type="text" id="reunionUrl" name="reunionUrl">
         <button id="saveReunion">Save Reunion</button>
+        <button id="cancelReunion">Cancel</button>
     </div>
 
     <div id="editReunionModal" style="display:none;" class="modalTable">
@@ -157,6 +158,14 @@ My patients
                     });
                 }
 
+            };
+            document.getElementById('cancelReunion').onclick = function () {
+                var reunionModal = document.getElementById('reunionModal');
+                reunionModal.style.display = 'none';
+                if (selectedDayEl) {
+                    selectedDayEl.classList.remove('selected-day');
+                    selectedDayEl = null;
+                }
             };
         },
         eventClick: function (info) {
