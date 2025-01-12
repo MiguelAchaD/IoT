@@ -1,62 +1,62 @@
 # Care4U Hub
 
-Care4U Hub es un innovador sistema IoT diseñado para garantizar la seguridad, el bienestar y la conexión de los adultos mayores que viven de forma independiente. Con funciones como detección de caídas, monitoreo de actividades y comunicación fluida, permite a las familias y cuidadores brindar una atención proactiva y completa.
+Care4U Hub is an innovative IoT system designed to ensure the safety, well-being, and connection of elderly individuals living independently. With features such as fall detection, activity monitoring, and seamless communication, it allows families and caregivers to provide proactive and comprehensive care.
 
-## Características
-- **Detección de Caídas**: Detecta caídas al instante y envía alertas a cuidadores y servicios de emergencia.
-- **Monitoreo de Actividades**: Realiza un seguimiento de las rutinas diarias y detecta irregularidades.
-- **Fácil Comunicación**: Facilita videollamadas para fortalecer la conexión con los seres queridos.
-- **Entorno Seguro en el Hogar**: Supervisa factores ambientales como temperatura y niveles de humo.
-- **Dashboard Interactivo**: Centraliza la información clave del sistema con widgets personalizables.
+## Features
+- **Fall Detection**:  Instantly detects falls and sends alerts to caregivers and emergency services.
+- **Activity Monitoring**: Tracks daily routines and detects irregularities.
+- **Easy Communication**: Facilitates video calls to strengthen connection with loved ones.
+- **Safe Home Environment**: Monitors environmental factors like temperature and smoke levels.
+- **Interactive Dashboard**: Centralizes key system information with customizable widgets.
   
 ## Tecnologías Utilizadas
 - **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Django (con integración de FullCalendar)
-- **Lenguaje de Programación**: Python
-- **Base de Datos**: PostgreSQL
-- **Librerías de Terceros**: 
-  - FullCalendar.js para gestión de eventos y horarios.
+- **Backend**: Django (with FullCalendar integration)
+- **Programming Language**: Python
+- **Database**: PostgreSQL
+- **Third-Party Libraries**: 
+  - FullCalendar.js for event and schedule management.
+    
+## Installation
+Follow these steps to install and run the project locally:
 
-## Instalación
-Sigue estos pasos para instalar y ejecutar el proyecto localmente:
-
-1. Clona este repositorio:
+1. Clone this repository:
    ```bash
    https://github.com/MiguelAchaD/IoT
    cd care4u-hub
    ```
-2. Instala las dependencias:
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Configura la base de datos:
+3. Set up the database:
    ```bash
    python manage.py migrate
    ```
-4. Inicia el servidor de desarrollo:
+4. Start the development server:  
    ```bash
    python manage.py runserver
    ```
-5. Accede a la aplicación en `http://127.0.0.1:8000`.
+5. Access the application at http://127.0.0.1:8000.
 
-## Uso
-- **Gestión del Calendario**: Programa y administra eventos relacionados con pacientes desde la página de calendario.
-- **Gestión de Pacientes**: Visualiza, edita y administra los detalles de los pacientes desde la página correspondiente.
-- **Panel de Inicio**: Accede a una vista general de las funcionalidades del sistema con una navegación amigable.
-- **Dashboard**: Se ve lo siguiente
-                **Información del Paciente**: Muestra detalles del paciente como nombre y edad, con la opción de actualizar datos mediante un ícono interactivo.
-                **Widgets Personalizables**:
-                  **Clima Actual**: Proporciona información en tiempo real sobre el clima.
-                  **Pronóstico del Clima**: Ofrece previsiones meteorológicas para ayudar en la planificación de actividades.
-                **Notificaciones**: Indica cuando no hay datos disponibles en el dashboard, manteniendo una experiencia clara para el usuario.
--**Navbar**: Define la barra de navegación principal con enlaces a las páginas de inicio, pacientes y perfil. Ligado a su archivo CSS correspondiente.
+## Usage
+- **Calendar Management**: Schedule and manage patient-related events from the calendar page.
+- **Patient Management**: View, edit, and manage patient details from the respective page.
+- **Home Panel**: Access an overview of the system's functionalities with user-friendly navigation.
+- **Dashboard**: Displays the following
+                **Patient Information**: Shows details like patient name and age, with the option to update data via an interactive icon.
+                **Customizable Widgets**:
+                  **Current Weather**: Provides real-time weather information.
+                  **Weather Forecast**: Offers weather predictions to help plan activities.
+                **Notifications**: Indicates when no data is available on the dashboard, maintaining a clear user experience.
+-**Navbar**: Defines the main navigation bar with links to home, patients, and profile pages. Linked to its corresponding CSS file.
 
--**Contact**: Plantilla para la página de contacto que incluye un formulario para consultas y retroalimentación con mensajes de éxito o error.
+-**Contact**: Template for the contact page that includes a form for inquiries and feedback with success or error messages.
 
--**Profile**: Permite gestionar el perfil del usuario, incluyendo cambios en información personal y cierre de sesión.
+-**Profile**: Allows users to manage their profile, including personal information updates and logging out.
 
-## Contribución
-Las contribuciones son bienvenidas. Por favor, envía un pull request o crea un issue para compartir tus ideas o feedback.
+## Contribution
+Contributions are welcome. Please submit a pull request or create an issue to share your ideas or feedback.
 
 ## Licencia
 [Licencia MIT](LICENSE)
