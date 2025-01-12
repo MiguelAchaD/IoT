@@ -34,7 +34,6 @@ class Record(models.Model):
     date_time = models.DateTimeField()
     heart_rate = models.FloatField()
     ambient_temperature = models.FloatField()
-    xyz_accelerometer = models.TextField()
     is_exposed_to_light = models.BooleanField()
 
 class History(models.Model):
