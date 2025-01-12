@@ -203,6 +203,7 @@ def add_reunion(request, title, start, end, description, url):
 def update_reunion(request, reunion_id):
     if request.method == 'POST':
         data = json.loads(request.body)
+        print(data)
         reunion = get_object_or_404(Reunion, id=reunion_id)
         reunion.title = data['title']
         reunion.description = data['description']

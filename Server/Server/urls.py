@@ -32,6 +32,7 @@ urlpatterns = [
     path('register/', register, name="register"),
     path('calendar/<str:public_id>', calendar, name='calendar'),
     path('add-reunion/<str:title>;<str:start>;<str:end>;<str:description>;<str:url>', add_reunion, name='add_reunion'),
+    path('update-reunion/<str:title>;<str:start>;<str:end>;<str:description>;<str:url>', add_reunion, name='update-reunion'),
     path('logout/', logout_view, name='logout'),
     path('contact/', contact_view, name='contact'),
     path('send-message/', contact_view, name='send_message'),
