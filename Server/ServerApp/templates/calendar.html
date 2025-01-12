@@ -41,30 +41,22 @@ My patients
 <div id="centralModal">
     <div id="reunionModal" style="display:none;" class="modalTable">
         <label for="reunionTitle">Reunion Title:</label>
-    <input type="text" id="reunionTitle" name="reunionTitle">
-    <div>
+        <input type="text" id="reunionTitle" name="reunionTitle">
         <label for="reunionStartTime">Start Time:</label>
         <input type="time" id="reunionStartTime" name="reunionStartTime">
-        <label for="reunionEndTime">End Time:</label>
-        <input type="time" id="reunionEndTime" name="reunionEndTime">
-    </div>
-    <label for="reunionDescription">Description:</label>
-    <input type="text" id="reunionDescription" name="reunionDescription">
-    <label for="reunionUrl">Url (optional):</label>
-    <input type="text" id="reunionUrl" name="reunionUrl">
+        <label for="reunionDescription">Description:</label>
+        <input type="text" id="reunionDescription" name="reunionDescription">
+        <label for="reunionUrl">Url (optional):</label>
+        <input type="text" id="reunionUrl" name="reunionUrl">
         <button id="saveReunion">Save Reunion</button>
-        <button id="cancelReunion">Cancel</button>
+    <button id="cancelReunion">Cancel</button>
     </div>
 
     <div id="editReunionModal" style="display:none;" class="modalTable">
         <label for="editReunionTitle">Reunion Title:</label>
-        <input type="text" id="editReunionTitle" name="editReunionTitle">
-        <div>
-            <label for="editReunionStartTime">Start Time:</label>
-            <input type="time" id="editReunionStartTime" name="editReunionStartTime">
-            <label for="editReunionEndTime">End Time:</label>
-            <input type="time" id="editReunionEndTime" name="editReunionEndTime">
-        </div>
+        <input type="text" id="editReunionTitle" name="editReunionTitle" disabled>
+        <label for="editReunionStartTime">Start Time:</label>
+        <input type="time" id="editReunionStartTime" name="editReunionStartTime">
         <label for="editReunionDescription">Description:</label>
         <input type="text" id="editReunionDescription" name="editReunionDescription">
         <label for="editReunionUrl">Url:</label>
@@ -100,7 +92,6 @@ My patients
                 {
                 title: "{{ reunion.title }}",
                 start: "{{ reunion.start|date:'Y-m-d\TH:i:s' }}",
-                end: "{{ reunion.end|date:'Y-m-d\TH:i:s' }}",
                 description: "{{ reunion.description }}",
                 url: "{{ reunion.url }}"
                 },
@@ -118,34 +109,24 @@ My patients
             document.getElementById('saveReunion').onclick = function () {
                 var reunionTitle = document.getElementById('reunionTitle').value;
                 var reunionStartTime = document.getElementById('reunionStartTime').value;
-                var reunionEndTime = document.getElementById('reunionEndTime').value;
                 var reunionDesctiption = document.getElementById('reunionDescription').value;
                 var reunionUrl = document.getElementById('reunionUrl').value;
-                if (reunionTitle && reunionStartTime && reunionEndTime) {
+                if (reunionTitle && reunionStartTime) {
                     var reunionStartDateTime = info.dateStr + 'T' + reunionStartTime;
-                    var reunionEndDateTime = info.dateStr + 'T' + reunionEndTime;
 
-                    var url = `/add-reunion/${encodeURIComponent(reunionTitle)};${encodeURIComponent(reunionStartDateTime)};${encodeURIComponent(reunionEndDateTime)};${encodeURIComponent(reunionDesctiption)};${encodeURIComponent(reunionUrl)}`;
+                    var url = `/add-reunion/${encodeURIComponent(reunionTitle)};${encodeURIComponent(reunionStartDateTime)};${encodeURIComponent(reunionDesctiption)};${encodeURIComponent(reunionUrl)}`;
 
                     fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': getCSRFToken()
-                        },
-                        body: JSON.stringify({
-                            title: reunionTitle,
-                            start: reunionStartDateTime,
-                            end: reunionEndDateTime,
-                            description: reunionDesctiption,
-                            url: reunionUrl
-                        })
+                        }
                     }).then(response => {
                         if (response.ok) {
                             calendar.addEvent({
                                 title: reunionTitle,
                                 start: reunionStartDateTime,
-                                end: reunionEndDateTime,
                                 description: reunionDesctiption,
                                 url: reunionUrl
                             });
@@ -174,7 +155,6 @@ My patients
             var editReunionModal = document.getElementById('editReunionModal');
             document.getElementById('editReunionTitle').value = info.event.title;
             document.getElementById('editReunionStartTime').value = info.event.start.toISOString().substring(11, 16);
-            document.getElementById('editReunionEndTime').value = info.event.end.toISOString().substring(11, 16);
             document.getElementById('editReunionDescription').value = info.event.extendedProps.description || '';
             document.getElementById('editReunionUrl').value = info.event.extendedProps.url || '';
             editReunionModal.style.display = 'flex';
@@ -182,26 +162,54 @@ My patients
             document.getElementById('updateReunion').onclick = function () {
                 var newTitle = document.getElementById('editReunionTitle').value;
                 var newStartTime = document.getElementById('editReunionStartTime').value;
-                var newEndTime = document.getElementById('editReunionEndTime').value;
                 var newDescription = document.getElementById('editReunionDescription').value;
                 var newUrl = document.getElementById('editReunionUrl').value;
+                var newStartDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newStartTime;
 
-                if (newTitle && newStartTime && newEndTime && newDescription && newUrl) {
-                    var newStartDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newStartTime;
-                    var newEndDateTime = info.event.start.toISOString().substring(0, 10) + 'T' + newEndTime;
+                if (newTitle && newStartTime && newDescription && newUrl) {
+                    var url = `/update-reunion/${encodeURIComponent(newTitle)};${encodeURIComponent(newStartDateTime)};${encodeURIComponent(newDescription)};${encodeURIComponent(newUrl)}`;
 
-                    info.event.setProp('title', newTitle);
-                    info.event.setStart(newStartDateTime);
-                    info.event.setEnd(newEndDateTime);
-                    info.event.setExtendedProp('description', newDescription);
-                    info.event.setExtendedProp('url', newUrl);
-                    editReunionModal.style.display = 'none';
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken()
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            info.event.setProp('title', newTitle);
+                            info.event.setStart('start', newStartDateTime);
+                            info.event.setExtendedProp('description', newDescription);
+                            info.event.setExtendedProp('url', newUrl);
+                            editReunionModal.style.display = 'none';
+                        } else {
+                            console.error('Error al actualizar el evento.');
+                        }
+                    }).catch(error => {
+                        console.error('Error de conexión:', error);
+                    });
                 }
             };
 
             document.getElementById('deleteReunion').onclick = function () {
-                info.event.remove();
-                editReunionModal.style.display = 'none';
+                var newTitle = document.getElementById('editReunionTitle').value;
+                var url = `/delete-reunion/${encodeURIComponent(newTitle)}`;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        info.event.remove();
+                        editReunionModal.style.display = 'none';
+                    } else {
+                        console.error('Error al eliminar el evento.');
+                    }
+                }).catch(error => {
+                    console.error('Error de conexión:', error);
+                });
             };
         }
         });

@@ -17,10 +17,6 @@ def dashboard(request, id=None):
     patient = Patient.objects.get(public_id=id)
     history = patient.record_history
 
-    print(f"{patient=}")
-    print(f"{patient.public_id=}")
-    print(f"{patient.city=}")
-
     weather_api_name = "Weather"
     weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": patient.city})
     weather_forecast_response = key_call_api(weather_api_name, "forecast", {"<CITY>": patient.city})
@@ -173,7 +169,7 @@ def calendar(request, public_id):
 
 
 @login_required
-def add_reunion(request, title, start, end, description, url):
+def add_reunion(request, title, start, description, url):
     if request.method == 'POST':
         try:
             public_id = request.session.get('patient_public_id')
@@ -187,7 +183,6 @@ def add_reunion(request, title, start, end, description, url):
                 description=description,
                 url=url,
                 start=start,
-                end=end,
             )
 
             patient.reunions.add(reunion)
@@ -200,25 +195,26 @@ def add_reunion(request, title, start, end, description, url):
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 @login_required
-def update_reunion(request, reunion_id):
+def update_reunion(request, title, start, description, url):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        print(data)
-        reunion = get_object_or_404(Reunion, id=reunion_id)
-        reunion.title = data['title']
-        reunion.description = data['description']
-        reunion.url = data['url']
-        reunion.start = data['start']
-        reunion.end = data.get('end')
-        reunion.save()
-        return JsonResponse({'status': 'success'})
+        reunion = Reunion.objects.get(title=title)
+        if (reunion):
+            reunion.title = title
+            reunion.start = start
+            reunion.description = description
+            reunion.url = url
+            reunion.save()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error'})
 
 @login_required
-def delete_reunion(request, reunion_id):
+def delete_reunion(request, title):
     if request.method == 'POST':
-        reunion = get_object_or_404(Reunion, id=reunion_id)
-        reunion.delete()
-        return JsonResponse({'status': 'success'})
+        reunion = get_object_or_404(Reunion, title=title)
+        if (reunion):
+            reunion.delete()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error'})
 
 ## EXTRA FUNCTIONS
 

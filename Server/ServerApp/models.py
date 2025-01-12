@@ -43,10 +43,9 @@ class History(models.Model):
     records = models.ManyToManyField(to=Record)
 
 class Reunion(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True)
     start = models.DateTimeField()
-    end = models.DateTimeField(null=True, blank=True)
     url = models.URLField(max_length=500, blank=True)
 
 class Patient(models.Model):
