@@ -22,56 +22,56 @@ DELETE FROM sqlite_sequence WHERE name='ServerApp_customuser_patients';
 
 --
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 08:00:00", 78, 23, 1);
+VALUES("2025-01-12 08:00:00", 78, 23, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 08:30:00", 82, 24, 0);
+VALUES("2025-01-12 08:30:00", 82, 24, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 09:00:00", 80, 22, 1);
+VALUES("2025-01-12 09:00:00", 80, 22, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 09:30:00", 84, 25, 0);
+VALUES("2025-01-12 09:30:00", 84, 25, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 10:00:00", 79, 23, 1);
+VALUES("2025-01-12 10:00:00", 79, 23, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 10:30:00", 83, 24, 0);
+VALUES("2025-01-12 10:30:00", 83, 24, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 11:00:00", 77, 22, 1);
+VALUES("2025-01-12 11:00:00", 77, 22, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 11:30:00", 81, 25, 0);
+VALUES("2025-01-12 11:30:00", 81, 25, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 12:00:00", 78, 23, 1);
+VALUES("2025-01-12 12:00:00", 78, 23, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 12:30:00", 85, 26, 0);
+VALUES("2025-01-12 12:30:00", 85, 26, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 01:00:00", 82, 24, 1);
+VALUES("2025-01-12 01:00:00", 82, 24, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 01:30:00", 79, 22, 0);
+VALUES("2025-01-12 01:30:00", 79, 22, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 02:00:00", 84, 25, 1);
+VALUES("2025-01-12 02:00:00", 84, 25, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 02:30:00", 80, 23, 0);
+VALUES("2025-01-12 02:30:00", 80, 23, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 03:00:00", 81, 22, 1);
+VALUES("2025-01-12 03:00:00", 81, 22, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 03:30:00", 83, 24, 0);
+VALUES("2025-01-12 03:30:00", 83, 24, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 04:00:00", 79, 23, 1);
+VALUES("2025-01-12 04:00:00", 79, 23, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 04:30:00", 80, 25, 0);
+VALUES("2025-01-12 04:30:00", 80, 25, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 05:00:00", 78, 22, 1);
+VALUES("2025-01-12 05:00:00", 78, 22, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 05:30:00", 82, 24, 0);
+VALUES("2025-01-12 05:30:00", 82, 24, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 06:00:00", 80, 23, 1);
+VALUES("2025-01-12 06:00:00", 80, 23, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 06:30:00", 85, 26, 0);
+VALUES("2025-01-12 06:30:00", 85, 26, 0);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 07:00:00", 77, 22, 1);
+VALUES("2025-01-12 07:00:00", 77, 22, 1);
 INSERT INTO ServerApp_record(date_time, heart_rate, ambient_temperature, is_exposed_to_light) 
-VALUES("2024-11-29 07:30:00", 83, 24, 0);
+VALUES("2025-01-12 07:30:00", 83, 24, 0);
 
 --
-INSERT INTO ServerApp_history(day_of_record) VALUES("2024-11-29");
+INSERT INTO ServerApp_history(day_of_record) VALUES("2025-01-12");
 
 --
 INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(1, 1);
