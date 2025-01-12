@@ -88,3 +88,18 @@
 #reload {
     width: 1em;
 }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    grid-template-rows: auto auto; /* Dos filas automáticas */
+    gap: 20px; /* Espaciado entre elementos */
+}
+
+.grid-item {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+

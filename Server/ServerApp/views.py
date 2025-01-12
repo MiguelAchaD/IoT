@@ -1,7 +1,7 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, Reunion
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, History, Reunion
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from .forms import ReunionForm
@@ -12,22 +12,33 @@ from django.core.mail import send_mail
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+
 @login_required
 def dashboard(request, id=None):
     patient = Patient.objects.get(public_id=id)
-    history = patient.record_history
+    history = History.objects.filter(patient=patient).order_by('-day_of_record').first()  # Filtrar para obtener la fecha más actual
+    if history:
+        records = history.records.all()
+        data = {
+            "heart_rate": [record.heart_rate for record in records],
+            "ambient_temperature": [record.ambient_temperature for record in records],
+            "is_exposed_to_light": [str(record.is_exposed_to_light) for record in records],
+            "timestamps": [record.date_time.strftime("%Y-%m-%d %H:%M:%S") for record in records],
+        }
 
     weather_api_name = "Weather"
     weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": patient.city})
     weather_forecast_response = key_call_api(weather_api_name, "forecast", {"<CITY>": patient.city})
     weather_forecast_response['forecast'] = weather_forecast_response['forecast']['forecastday'][:5]
 
+     
     dashboards = [
         {"type": "weather_current", "data": weather_current_response},
         {"type": "weather_forecast", "data": weather_forecast_response},
+        {"type": "iot_data", "data": data},  # Agregar los datos IoT
     ]
 
-    return render(request, "dashboard.html", {"patient": patient, "dashboards": dashboards})
+    return render(request, "dashboard.html", {"patient": patient, "dashboards": dashboards, "data": data, "weather_current": weather_current_response, "weather_forecast": weather_forecast_response})
 
 
 def home(request):
@@ -111,8 +122,16 @@ def addPatient(request, public_id, name, age, sex, city):
     return redirect("patients")
 
 @login_required
-def editPatient(request, old_public_id, public_id, name, age, sex, city):
-    return redirect("patients")
+def edit_patient(request, public_id, name, age, sex, city):
+    patient = get_object_or_404(Patient, public_id=public_id)
+    if request.method == 'POST':
+        patient.name = name
+        patient.age = age
+        patient.sex = sex
+        patient.city = city
+        patient.save()
+        return redirect('patients')
+    return render(request, 'edit_patient.html', {'patient': patient})
 
 @login_required
 def deletePatient(request, public_id):
