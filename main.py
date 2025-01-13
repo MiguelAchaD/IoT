@@ -2,11 +2,13 @@ import json
 import socket
 from flask import Flask, jsonify, request
 import threading
+import subprocess
 import time
 from modules.components.button import Button
 from modules.components.led_button import Led_Button
-from modules.components.temperature_sensor import TemperatureHumidity_Sensor
 from modules.components.lcd_screen import Lcd_Screen
+from modules.components.temperature_sensor import TemperatureHumidity_Sensor
+from modules.components.hear_rate_sensor import MAX30100
 
 app = Flask(__name__)
 
@@ -47,17 +49,78 @@ def delete_ip():
     except Exception as e:
         print(f"Error al borrar la IP: {e}")
 
+def create_cron(title, date_time, url):
+    try:
+        cron_date1 = date_time.split("T")
+        cron_date2 = cron_date1[0].split("-")
+        cron_date3 = cron_date1[1].split(":")
+        minute, hour, day, month = cron_date3[1], cron_date3[0], cron_date2[2], cron_date2[1]
+        command = f"DISPLAY=:0 chromium-browser {url} &"
+        cron_entry = f"{minute} {hour} {day} {month} * {command} # {title}\n"
+
+        subprocess.run(f"(crontab -l; echo \"{cron_entry}\") | crontab -", shell=True, check=True)
+        return {"status": "success", "message": f"Cron job '{title}' created successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+def remove_cron(title):
+    try:
+        result = subprocess.run("crontab -l", shell=True, check=True, text=True, capture_output=True)
+        cron_jobs = result.stdout.splitlines()
+
+        filtered_jobs = [job for job in cron_jobs if f"{title}" not in job]
+
+        subprocess.run(f"echo \"{chr(10).join(filtered_jobs)}\" | crontab -", shell=True, check=True)
+
+        return {"status": "success", "message": "Cron job removed successfully"}
+
+    except subprocess.CalledProcessError as e:
+        return {"status": "error", "message": str(e)}
+
+
+def modify_cron(title, new_date_time=None, new_url=None):
+    try:
+        result = subprocess.run("crontab -l", shell=True, check=True, text=True, capture_output=True)
+        cron_jobs = result.stdout.splitlines()
+        updated_jobs = []
+        updated = False
+
+        for job in cron_jobs:
+            if len(str(job)) < 0:
+                pass
+            if f"# {title}" in job:
+                cron_parts = job.split()
+                if new_date_time:
+                    cron_date1 = new_date_time.split("T")
+                    cron_date2 = cron_date1.split("-")
+                    cron_date3 = cron_date1.split(":")
+                    minute, hour, day, month = cron_date3[1], cron_date3[0], cron_date2[2], cron_date2[1]
+                if new_url:
+                    command_index = job.index("chromium-browser")
+                    cron_parts[command_index + 1] = new_url
+                updated_jobs.append(" ".join(cron_parts))
+                updated = True
+            else:
+                updated_jobs.append(job)
+
+        if not updated:
+            return {"status": "error", "message": f"No cron job found with title '{title}'"}
+
+        subprocess.run(f"echo \"{chr(10).join(updated_jobs)}\" | crontab -", shell=True, check=True)
+        return {"status": "success", "message": f"Cron job '{title}' modified successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 class MenuSystem:
-    def __init__(self, button_next, button_prev, button_select_action, button_select_led, temperature_sensor):
+    def __init__(self, button_next, button_prev, button_select_action, button_select_led):
         self.current_menu = "main"
         self.menu_index = 0
-        self.temperature_sensor = temperature_sensor
         self.load_contacts()
         self.menus = {
             "main": [
                 {"label": "Check Device Status", "action": self.device_status},
                 {"label": "Contacts", "action": self.contacts_menu},
-                {"label": "Reset Host", "action": self.reset_host},  # Nuevo ítem de menú
+                {"label": "Reset Host", "action": self.reset_host},
             ],
             "contacts": [
                 {"label": "View Contacts", "action": self.view_contacts},
@@ -140,8 +203,11 @@ class MenuSystem:
         self.button_select.cleanup()
 
     def get_sensor_data(self):
-        temperature = self.temperature_sensor.read_temperature()
-        return {"temperature": temperature}
+        temperature_sensor = TemperatureHumidity_Sensor()
+        temperature = temperature_sensor.read()
+        heartrate_sensor = MAX30100()
+        heartrate = heartrate_sensor.read_heart_rate()
+        return {"temperature": temperature, "heartrate": heartrate}
 
     def check_ip_and_show(self):
         device_ip = load_ip()
@@ -161,7 +227,7 @@ class MenuSystem:
         while not self.ip_displayed:
             time.sleep(1)
 
-menu_system = MenuSystem(button_prev=5, button_select_action=17, button_select_led=16, button_next=18, temperature_sensor=TemperatureHumidity_Sensor())
+menu_system = MenuSystem(button_prev=5, button_select_action=17, button_select_led=16, button_next=18)
 
 @app.route('/api/status', methods=['GET'])
 def api_status():
@@ -176,6 +242,43 @@ def api_status():
 def api_sensors():
     sensor_data = menu_system.get_sensor_data()
     return jsonify(sensor_data)
+
+@app.route('/api/cron/create', methods=['POST'])
+def api_create_cron():
+    data = request.json
+    title = data.get('title')
+    date_time = data.get('date_time')
+    url = data.get('url')
+
+    if not title or not date_time or not url:
+        return jsonify({"status": "error", "message": "Missing required parameters"}), 400
+
+    result = create_cron(title, date_time, url)
+    return jsonify(result)
+
+@app.route('/api/cron/remove', methods=['POST'])
+def api_remove_cron():
+    data = request.json
+    title = data.get('title')
+
+    if not title:
+        return jsonify({"status": "error", "message": "Missing required parameter: title"}), 400
+
+    result = remove_cron(title)
+    return jsonify(result)
+
+@app.route('/api/cron/modify', methods=['POST'])
+def api_modify_cron():
+    data = request.json
+    title = data.get('title')
+    new_date_time = data.get('new_date_time')
+    new_url = data.get('new_url')
+
+    if not title:
+        return jsonify({"status": "error", "message": "Missing required parameter: title"}), 400
+
+    result = modify_cron(title, new_date_time, new_url)
+    return jsonify(result)
 
 def run_flask():
     app.run(host="0.0.0.0", port=5000)

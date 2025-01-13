@@ -16,7 +16,6 @@ class TemperatureHumidity_Sensor:
         except Exception as e:
             return None, None
 
-
 if __name__ == "__main__":
     try:
         dht_sensor = TemperatureHumidity_Sensor(pin=12)
