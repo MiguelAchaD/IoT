@@ -1,41 +1,60 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, History, Reunion
+from ServerApp.models import Patient, Api, Endpoint, ApiKeys, CustomUser, Reunion, History, Reunion, Record
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .forms import ReunionForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.http import JsonResponse
 from django.core.mail import send_mail
-import json
-from django.views.decorators.csrf import csrf_exempt
-
+from datetime import datetime
 
 @login_required
 def dashboard(request, id=None):
     patient = Patient.objects.get(public_id=id)
-    history = History.objects.filter(patient=patient).order_by('-day_of_record').first()  # Filtrar para obtener la fecha más actual
-    if history:
-        records = history.records.all()
-        data = {
-            "heart_rate": [record.heart_rate for record in records],
-            "ambient_temperature": [record.ambient_temperature for record in records],
-            "is_exposed_to_light": [str(record.is_exposed_to_light) for record in records],
-            "timestamps": [record.date_time.strftime("%Y-%m-%d %H:%M:%S") for record in records],
-        }
+    patient_ip = patient.ip
+
+    client_api_name = "Clients"
+    user_sensors = call_api(client_api_name, "get_sensor_results", extra_url_patient=f"http://{patient_ip}:5000")
+
+    heart_rate = user_sensors.get("heartrate")
+    ambient_temperature = user_sensors.get("temperature")
+    #is_exposed_to_light = user_sensors.get("is_exposed_to_light")
+
+    record = Record.objects.create(
+        date_time=datetime.now(),
+        heart_rate=heart_rate,
+        ambient_temperature=ambient_temperature,
+        is_exposed_to_light=0
+    )
+
+    today = datetime.today()
+    print(today)
+    history = History.objects.filter(patient=patient, day_of_record=today).first()
+
+    if not history:
+        history = History.objects.create(patient=patient, day_of_record=today)
+
+    history.records.add(record)
+
+    records = history.records.all()
+    data = {
+        "heart_rate": [record.heart_rate for record in records],
+        "ambient_temperature": [record.ambient_temperature for record in records],
+        "is_exposed_to_light": [str(record.is_exposed_to_light) for record in records],
+        "timestamps": [record.date_time.strftime("%Y-%m-%d %H:%M:%S") for record in records],
+    }
 
     weather_api_name = "Weather"
     weather_current_response = key_call_api(weather_api_name, "current", {"<CITY>": patient.city})
     weather_forecast_response = key_call_api(weather_api_name, "forecast", {"<CITY>": patient.city})
     weather_forecast_response['forecast'] = weather_forecast_response['forecast']['forecastday'][:5]
 
-     
     dashboards = [
         {"type": "weather_current", "data": weather_current_response},
         {"type": "weather_forecast", "data": weather_forecast_response},
-        {"type": "iot_data", "data": data},  # Agregar los datos IoT
+        {"type": "iot_data", "data": data},
     ]
 
     return render(request, "dashboard.html", {"patient": patient, "dashboards": dashboards, "data": data, "weather_current": weather_current_response, "weather_forecast": weather_forecast_response})
@@ -105,11 +124,12 @@ def patients(request):
     })
 
 @login_required
-def addPatient(request, public_id, name, age, sex, city):
+def addPatient(request, ip, public_id, name, age, sex, city):
     patient, created = Patient.objects.get_or_create(
         public_id=public_id,
         defaults={
             'name': name,
+            'ip': ip,
             'age': age,
             'sex': sex,
             'city': city,
@@ -120,18 +140,6 @@ def addPatient(request, public_id, name, age, sex, city):
     request.user.patients.add(patient)
 
     return redirect("patients")
-
-@login_required
-def edit_patient(request, public_id, name, age, sex, city):
-    patient = get_object_or_404(Patient, public_id=public_id)
-    if request.method == 'POST':
-        patient.name = name
-        patient.age = age
-        patient.sex = sex
-        patient.city = city
-        patient.save()
-        return redirect('patients')
-    return render(request, 'edit_patient.html', {'patient': patient})
 
 @login_required
 def deletePatient(request, public_id):
@@ -196,6 +204,7 @@ def add_reunion(request, title, start, description, url):
                 return JsonResponse({'status': 'error', 'message': 'No patient selected'}, status=400)
 
             patient = Patient.objects.get(public_id=public_id)
+            patient_ip = patient.ip
 
             reunion, created = Reunion.objects.get_or_create(
                 title=title,
@@ -203,6 +212,10 @@ def add_reunion(request, title, start, description, url):
                 url=url,
                 start=start,
             )
+
+            create_reunion_rp = call_api("Clients", "calendar_create", data={"title": f"{title}", "date_time": f"{start}", "url": f"{url}"}, extra_url_patient=f"http://{patient_ip}:5000")
+            if create_reunion_rp.status_code not in [200, 300]:
+                return JsonResponse({'status': 'error', 'message': f"{create_reunion_rp.content}"})
 
             patient.reunions.add(reunion)
 
@@ -216,12 +229,18 @@ def add_reunion(request, title, start, description, url):
 @login_required
 def update_reunion(request, title, start, description, url):
     if request.method == 'POST':
+        public_id = request.session.get('patient_public_id')
+        patient = Patient.objects.get(public_id=public_id)
+        patient_ip = patient.ip
         reunion = Reunion.objects.get(title=title)
         if (reunion):
             reunion.title = title
             reunion.start = start
             reunion.description = description
             reunion.url = url
+            update_reunion_rp = call_api("Clients", "calendar_modify", data={"title": f"{title}", "new_date_time": f"{start}", "new_url": f"{url}"}, extra_url_patient=f"http://{patient_ip}:5000")
+            if update_reunion_rp.status_code not in [200, 300]:
+                return JsonResponse({'status': 'error', 'message': f"{update_reunion_rp.content}"})
             reunion.save()
             return JsonResponse({'status': 'success'})
         return JsonResponse({'status': 'error'})
@@ -229,8 +248,14 @@ def update_reunion(request, title, start, description, url):
 @login_required
 def delete_reunion(request, title):
     if request.method == 'POST':
+        public_id = request.session.get('patient_public_id')
+        patient = Patient.objects.get(public_id=public_id)
+        patient_ip = patient.ip
         reunion = get_object_or_404(Reunion, title=title)
         if (reunion):
+            delete_reunion_rp = call_api("Clients", "calendar_remove", data={"title": f"{title}"}, extra_url_patient=f"http://{patient_ip}:5000")
+            if delete_reunion_rp.status_code not in [200, 300]:
+                return JsonResponse({'status': 'error', 'message': f"{delete_reunion_rp.content}"})
             reunion.delete()
             return JsonResponse({'status': 'success'})
         return JsonResponse({'status': 'error'})
@@ -251,23 +276,27 @@ def key_call_api(api_name, endpoint_name, parameters=None):
     else:
         return None
 
-def call_api(api_name, endpoint_name, parameters=None):
+def call_api(api_name, endpoint_name, parameters=None, data=None, extra_url_patient=None):
     try:
         api_object = Api.objects.get(name=api_name)
         endpoint_object = Endpoint.objects.get(name=endpoint_name)
     except:
         return None
-    
+
+    if extra_url_patient:
+        api_object.base_url = extra_url_patient
+
     call_url = str(api_object.base_url) + str(endpoint_object.url)
     method = endpoint_object.method
     
-    if (len(parameters.keys()) > 0):
-        call_url = format_url(call_url, parameters)
+    if (parameters):
+        if (len(parameters.keys()) > 0):
+            call_url = format_url(call_url, parameters)
 
     if (method == "GET"):
         return requests.get(url=call_url, headers=api_object.headers).json()
     elif (method == "POST"):
-        return requests.post(url=call_url)
+        return requests.post(url=call_url, json=data)
 
 def format_url(call_url, parameters):
     for parameter in parameters.keys():

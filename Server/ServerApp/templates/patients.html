@@ -31,9 +31,6 @@
                 <a class="action-link" href="{% url 'calendar' patient.public_id %}">
                     <img src="{% static 'images/icons/calendar-light.svg' %}" alt="calendar">
                 </a>
-                <button class="action-link edit-patient-button">
-                    <img src="{% static 'images/icons/edit-light.svg' %}" alt="edit"  title="edit">
-                </button>
                 <a class="action-link" href="{% url 'deletePatient' patient.public_id %}">
                     <img src="{% static 'images/icons/delete-light.svg' %}" alt="delete"  title="delete">
                 </a>
@@ -62,6 +59,8 @@
     <h2>New Patient</h2>
     <label for="public_id">Internal ID</label>
     <input type="text" name="public_id" id="public_id">
+    <label for="ip">IP</label>
+    <input type="text" name="ip" id="ip">
     <label for="name">Patient name</label>
     <input type="text" name="name" id="name">
     <label for="sex">Sex</label>
@@ -72,23 +71,6 @@
     <input type="text" name="city" id="city">
     <div class="buttons">
         <a href="#" id="add-patient-link" class="access-button">Add patient</a>
-        <button id="cancel-patient" class="access-button cancel">Cancel</button>
-    </div>
-</form>
-<form id="edit-patient" method="post" class="hidden">
-    <h2>Edit Patient <span id="patient-edit-name"></span></h2>
-    <label for="public_id">Internal ID</label>
-    <input type="text" name="public_id" id="public_id">
-    <label for="name">Patient name</label>
-    <input type="text" name="name" id="name">
-    <label for="sex">Sex</label>
-    <input type="text" name="sex" id="sex">
-    <label for="age">Age</label>
-    <input type="text" name="age" id="age">
-    <label for="city">City</label>
-    <input type="text" name="city" id="city">
-    <div class="buttons">
-        <a href="#" id="edit-patient-link" class="access-button">edit patient</a>
         <button id="cancel-patient" class="access-button cancel">Cancel</button>
     </div>
 </form>

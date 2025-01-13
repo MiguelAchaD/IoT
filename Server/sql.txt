@@ -100,8 +100,8 @@ INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(1, 23);
 INSERT INTO ServerApp_history_records(history_id, record_id) VALUES(1, 24);
 
 --
-INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex, city) 
-VALUES("P-001", "Oier", 21, "INACTIVE", 1, "men", "Bilbao");
+INSERT INTO ServerApp_patient(public_id, name, age, status, record_history_id, sex, city, ip) 
+VALUES("P-001", "Oier", 21, "INACTIVE", 1, "men", "Bilbao", "192.168.1.42");
 
 --
 INSERT INTO ServerApp_customuser_patients(customuser_id, patient_id)
@@ -110,18 +110,40 @@ VALUES(1, 1);
 --
 INSERT INTO ServerApp_api(name, base_url, headers)
 VALUES ("Weather", "https://api.weatherapi.com/", '{"Content-Type": "application/json", "Accept": "application/json"}');
+INSERT INTO ServerApp_api(name, base_url, headers)
+VALUES ("Clients", "", '{"Content-Type": "application/json", "Accept": "application/json"}');
 
 --
 INSERT INTO ServerApp_endpoint(name, method, url)
 VALUES ("current", "GET", "v1/current.json?key=<KEY>&q=<CITY>&aqi=yes");
 INSERT INTO ServerApp_endpoint(name, method, url)
 VALUES ("forecast", "GET", "v1/forecast.json?key=<KEY>&q=<CITY>&days=5&aqi=yes&alerts=yes");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("get_sensor_results", "GET", "/api/sensors");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("get_status", "POST", "/api/status");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("calendar_create", "POST", "/api/cron/create");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("calendar_remove", "POST", "/api/cron/remove");
+INSERT INTO ServerApp_endpoint(name, method, url)
+VALUES ("calendar_modify", "POST", "/api/cron/modify");
 
 --
 INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
 VALUES(1, 1);
 INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
 VALUES(1, 2);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(2, 3);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(2, 4);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(2, 5);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(2, 6);
+INSERT INTO ServerApp_api_endpoints(api_id, endpoint_id)
+VALUES(2, 7);
 
 --
 INSERT INTO ServerApp_key(key_value)
@@ -130,5 +152,3 @@ VALUES("6d0dc83492674279a88150501242111");
 --
 INSERT INTO ServerApp_apikeys(api_name, key_id)
 VALUES("Weather", 1);
-	
-	

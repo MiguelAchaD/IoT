@@ -49,6 +49,7 @@ class Reunion(models.Model):
 
 class Patient(models.Model):
     id = models.AutoField(primary_key=True)
+    ip = models.TextField(unique=True)
     public_id = models.TextField()
     name = models.TextField()
     age = models.IntegerField()
