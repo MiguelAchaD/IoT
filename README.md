@@ -22,7 +22,7 @@ Follow these steps to install and run the project locally:
 1. Clone this repository:
    ```bash
    git clone -b Client https://github.com/MiguelAchaD/IoT
-   cd Iot
+   cd IoT
    ```
 2. Install dependencies:
    ```bash
