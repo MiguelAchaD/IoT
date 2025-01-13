@@ -21,38 +21,20 @@ Follow these steps to install and run the project locally:
 
 1. Clone this repository:
    ```bash
-   https://github.com/MiguelAchaD/IoT
-   cd care4u-hub
+   git clone -b Client https://github.com/MiguelAchaD/IoT
+   cd Iot
    ```
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Set up the database:
+3. Execute the program:
    ```bash
-   python manage.py migrate
+   python main.py
    ```
-4. Start the development server:  
-   ```bash
-   python manage.py runserver
-   ```
-5. Access the application at http://127.0.0.1:8000.
-
 ## Usage
-- **Calendar Management**: Schedule and manage patient-related events from the calendar page.
-- **Patient Management**: View, edit, and manage patient details from the respective page.
-- **Home Panel**: Access an overview of the system's functionalities with user-friendly navigation.
-- **Dashboard**: Displays the following
-                **Patient Information**: Shows details like patient name and age, with the option to update data via an interactive icon.
-                **Customizable Widgets**:
-                  **Current Weather**: Provides real-time weather information.
-                  **Weather Forecast**: Offers weather predictions to help plan activities.
-                **Notifications**: Indicates when no data is available on the dashboard, maintaining a clear user experience.
--**Navbar**: Defines the main navigation bar with links to home, patients, and profile pages. Linked to its corresponding CSS file.
+- **Management**: Use the build-in buttons to navigate through the menus.
 
--**Contact**: Template for the contact page that includes a form for inquiries and feedback with success or error messages.
-
--**Profile**: Allows users to manage their profile, including personal information updates and logging out.
 
 ## Contribution
 Contributions are welcome. Please submit a pull request or create an issue to share your ideas or feedback.
